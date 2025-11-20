@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stay Lit(erary) - Reading Bingo 2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Playfair Display', serif;
+            background-color: #fffefc;
+            color: #879fbf;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: #879fbf;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: #879fbf;
+        }
+        
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #879fbf;
+            border-radius: 8px;
+            background: white;
+            color: #879fbf;
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+        }
+        
+        .bingo-grid {
+            display: grid;
+            gap: 0.75rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid #879fbf;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .bingo-square {
+            position: relative;
+            aspect-ratio: 1;
+            border: 2px solid #ffd4b3;
+            background-color: #ffe5d0;
+            border-radius: 8px;
+            padding: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .bingo-square:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .bingo-square.in-progress {
+            background-color: #cfe2ff;
+            border-color: #9ec5ff;
+        }
+        
+        .bingo-square.complete {
+            background-color: #d4edda;
+            border-color: #a3d9b1;
+        }
+        
+        .square-text {
+            font-size: 0.85rem;
+            color: #879fbf;
+            line-height: 1.3;
+        }
+        
+        .book-title {
+            font-size: 0.7rem;
+            color: #879fbf;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+        
+        .menu-button {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(255,255,255,0.7);
+            border: none;
+            border-radius: 4px;
+            padding: 4px;
+            cursor: pointer;
+            z-index: 2;
+        }
+        
+        .menu-button:hover {
+            background: rgba(255,255,255,0.9);
+        }
+        
+        .checkmark {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            color: #28a745;
+            font-size: 1.2rem;
+            z-index: 2;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 32px;
+            right: 4px;
+            background: white;
+            border: 2px solid #879fbf;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 150px;
+            z-index: 10;
+        }
+        
+        .dropdown-menu button {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            background: none;
+            text-align: left;
+            cursor: pointer;
+            color: #879fbf;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .dropdown-menu button:hover {
+            background-color: #f0f8ff;
+        }
+        
+        .dropdown-menu button.danger {
+            color: #dc3545;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            border: 2px solid #879fbf;
+        }
+        
+        .modal-content h3 {
+            margin-bottom: 1rem;
+            color: #879fbf;
+        }
+        
+        .modal-content input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #879fbf;
+            border-radius: 8px;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1rem;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .modal-buttons button {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Playfair Display', serif;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: #879fbf;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #879fbf;
+        }
+        
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border: 2px solid;
+            border-radius: 4px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #879fbf;
+            opacity: 0.6;
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .square-text {
+                font-size: 0.7rem;
+            }
+            
+            .book-title {
+                font-size: 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Stay Lit(erary)</h1>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label>Select Your Name</label>
+                <select id="nameSelect">
+                    <option value="">Choose your name...</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Select Category</label>
+                <select id="categorySelect">
+                    <option value="Casual">Casual (5×5)</option>
+                    <option value="Ambitious">Ambitious (4×4)</option>
+                    <option value="Elite">Elite (3×3)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div id="bingoGrid"></div>
+        
+        <div class="legend" id="legend" style="display: none;">
+            <div class="legend-item">
+                <div class="legend-box" style="background-color: #ffe5d0; border-color: #ffd4b3;"></div>
+                <span>Not Started</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background-color: #cfe2ff; border-color: #9ec5ff;"></div>
+                <span>In Progress</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background-color: #d4edda; border-color: #a3d9b1;"></div>
+                <span>Complete</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="bookModal">
+        <div class="modal-content">
+            <h3>Update Book</h3>
+            <input type="text" id="bookInput" placeholder="Enter book title...">
+            <div class="modal-buttons">
+                <button class="btn-primary" id="saveBook">Save</button>
+                <button class="btn-secondary" id="cancelBook">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDl4gVieR0SFncspang1wig6UMnFXeVJUI",
+            authDomain: "stay-literary.firebaseapp.com",
+            projectId: "stay-literary",
+            storageBucket: "stay-literary.firebasestorage.app",
+            messagingSenderId: "13003449670",
+            appId: "1:13003449670:web:0ef767734aad1fa5243147"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const NAMES = [
+            "Ryan Evans",
+            "Jac Evans",
+            "Ashley Crouthamel",
+            "Leila McGraw",
+            "Chris McGraw",
+            "Kim Beasley",
+            "Jared Beasley",
+            "Beth Palmer"
+        ];
+
+        const CATEGORIES = {
+            'Casual': {
+                gridCols: 5,
+                squares: [
+                    "Mythology/Fairytale Retelling",
+                    "Book by an Author Who is No Longer Alive",
+                    "Debut Author",
+                    "Book About a Piece of Media You Love (TV Show, Movie, Band, etc)",
+                    "Book Chosen Solely Based on the Cover",
+                    "A Classic You've Never Read",
+                    "Book Adapted Into a Movie/TV Series",
+                    "Childhood Classic",
+                    "Published in the Year You Were Born",
+                    "Set in the Distant Future",
+                    "Genre You Don't Usually Read",
+                    "Read a Book by Listening to the Audiobook",
+                    "Ask Three People What They Are Currently Reading",
+                    "Speculative Fiction (Beyond Realism, Imaginative Elements)",
+                    "BIPOC Author",
+                    "Graphic Novel or Manga",
+                    "Read a Book With a Friend",
+                    "Author Not From the US",
+                    "Roll a Die to Determine What to Read: 1) Romance 2) Sci-Fi 3) Mystery 4) High Fantasy 5) Historical Fiction 6) Adventure",
+                    "Written by the other Gender",
+                    "Mystery or Thriller",
+                    "A Book with an Animal as a Character",
+                    "One Word Title",
+                    "Fantasy (High or Low)",
+                    "Short Story Collection"
+                ]
+            },
+            'Ambitious': {
+                gridCols: 4,
+                squares: [
+                    "Published Between 1940 and 1969",
+                    "Villain as a Protagonist",
+                    "Memoir, Biography, or Autobiography",
+                    "Published in 2025",
+                    "Book with Multiple Points of View",
+                    "Non-fiction on a New Subject",
+                    "Indigenous Author",
+                    "A Book Someone Whose Name Has 3 Syllables Recommended",
+                    "Author Who Won a Literary Prize",
+                    "Read a Book with 2 or More Friends",
+                    "Translated Work",
+                    "Independently Published",
+                    "Book Written by an LGBTQIA+ Author",
+                    "Staff Pick From an Indie Bookstore",
+                    "Book Tackling Social Issue(s)",
+                    "A Book with Non-linear Narrative or Time Structure"
+                ]
+            },
+            'Elite': {
+                gridCols: 3,
+                squares: [
+                    "Complete the Middle Square on the Casual Card...Then Read One of Those Books",
+                    "Written Before 1910",
+                    "Read a Book on Theme with a Heritage/History Month, in that Month",
+                    "Have Someone Blindly Give You a Book Recommendation",
+                    "Read a Trilogy, or 3 Books by the Same Author",
+                    "Read a Book as a Part of a Book Club",
+                    "Banned Book",
+                    "Read 40+ Books in 2026",
+                    "Pulitzer Prize Winner"
+                ]
+            }
+        };
+
+        let currentName = '';
+        let currentCategory = 'Casual';
+        let cardData = {};
+        let activeMenu = null;
+        let editingSquare = null;
+
+        // Initialize
+        const nameSelect = document.getElementById('nameSelect');
+        const categorySelect = document.getElementById('categorySelect');
+        const bingoGrid = document.getElementById('bingoGrid');
+        const legend = document.getElementById('legend');
+        const bookModal = document.getElementById('bookModal');
+        const bookInput = document.getElementById('bookInput');
+        const saveBookBtn = document.getElementById('saveBook');
+        const cancelBookBtn = document.getElementById('cancelBook');
+
+        // Populate names
+        NAMES.forEach(name => {
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            nameSelect.appendChild(option);
+        });
+
+        nameSelect.addEventListener('change', async (e) => {
+            currentName = e.target.value;
+            await loadCard();
+        });
+
+        categorySelect.addEventListener('change', async (e) => {
+            currentCategory = e.target.value;
+            await loadCard();
+        });
+
+        async function loadCard() {
+            if (!currentName) {
+                bingoGrid.innerHTML = '<div class="empty-state">Select your name to view your bingo card</div>';
+                legend.style.display = 'none';
+                return;
+            }
+
+            legend.style.display = 'flex';
+            
+            try {
+                const docRef = doc(db, 'cards', `${currentName}-${currentCategory}`);
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    cardData = docSnap.data();
+                } else {
+                    cardData = {};
+                }
+            } catch (error) {
+                console.error('Error loading card:', error);
+                cardData = {};
+            }
+
+            renderGrid();
+        }
+
+        function renderGrid() {
+            const category = CATEGORIES[currentCategory];
+            bingoGrid.className = 'bingo-grid';
+            bingoGrid.style.gridTemplateColumns = `repeat(${category.gridCols}, 1fr)`;
+            
+            bingoGrid.innerHTML = '';
+            
+            category.squares.forEach((square, index) => {
+                const squareData = cardData[index] || { status: 'incomplete', book: '' };
+                
+                const squareDiv = document.createElement('div');
+                squareDiv.className = `bingo-square ${squareData.status}`;
+                
+                squareDiv.innerHTML = `
+                    <button class="menu-button" data-index="${index}">⋮</button>
+                    ${squareData.status === 'complete' ? '<span class="checkmark">✓</span>' : ''}
+                    <div class="square-text">${square}</div>
+                    ${squareData.book ? `<div class="book-title">${squareData.book}</div>` : ''}
+                `;
+                
+                bingoGrid.appendChild(squareDiv);
+            });
+
+            // Add event listeners
+            document.querySelectorAll('.menu-button').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const index = parseInt(btn.dataset.index);
+                    showMenu(index, btn);
+                });
+            });
+
+            // Close menus when clicking outside
+            document.addEventListener('click', closeAllMenus);
+        }
+
+        function showMenu(index, button) {
+            closeAllMenus();
+            
+            const menu = document.createElement('div');
+            menu.className = 'dropdown-menu';
+            menu.innerHTML = `
+                <button data-action="update" data-index="${index}">Update Book</button>
+                <button data-action="complete" data-index="${index}">Mark ${cardData[index]?.status === 'complete' ? 'Incomplete' : 'Complete'}</button>
+                <button class="danger" data-action="clear" data-index="${index}">Clear</button>
+            `;
+            
+            button.parentElement.appendChild(menu);
+            activeMenu = menu;
+
+            menu.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const action = btn.dataset.action;
+                    const idx = parseInt(btn.dataset.index);
+                    handleMenuAction(action, idx);
+                });
+            });
+        }
+
+        function closeAllMenus() {
+            if (activeMenu) {
+                activeMenu.remove();
+                activeMenu = null;
+            }
+        }
+
+        function handleMenuAction(action, index) {
+            closeAllMenus();
+            
+            switch(action) {
+                case 'update':
+                    editingSquare = index;
+                    bookInput.value = cardData[index]?.book || '';
+                    bookModal.classList.add('active');
+                    bookInput.focus();
+                    break;
+                case 'complete':
+                    toggleComplete(index);
+                    break;
+                case 'clear':
+                    clearSquare(index);
+                    break;
+            }
+        }
+
+        async function toggleComplete(index) {
+            const current = cardData[index] || { status: 'incomplete', book: '' };
+            cardData[index] = {
+                ...current,
+                status: current.status === 'complete' ? 'in-progress' : 'complete'
+            };
+            await saveCard();
+            renderGrid();
+        }
+
+        async function clearSquare(index) {
+            delete cardData[index];
+            await saveCard();
+            renderGrid();
+        }
+
+        async function saveCard() {
+            if (!currentName) return;
+            
+            try {
+                const docRef = doc(db, 'cards', `${currentName}-${currentCategory}`);
+                await setDoc(docRef, cardData);
+            } catch (error) {
+                console.error('Error saving card:', error);
+                alert('Failed to save. Please try again.');
+            }
+        }
+
+        saveBookBtn.addEventListener('click', async () => {
+            if (bookInput.value.trim() && editingSquare !== null) {
+                cardData[editingSquare] = {
+                    ...cardData[editingSquare],
+                    book: bookInput.value.trim(),
+                    status: 'in-progress'
+                };
+                await saveCard();
+                renderGrid();
+            }
+            bookModal.classList.remove('active');
+            editingSquare = null;
+        });
+
+        cancelBookBtn.addEventListener('click', () => {
+            bookModal.classList.remove('active');
+            editingSquare = null;
+        });
+
+        bookInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                saveBookBtn.click();
+            }
+        });
+
+        // Close modal when clicking outside
+        bookModal.addEventListener('click', (e) => {
+            if (e.target === bookModal) {
+                bookModal.classList.remove('active');
+                editingSquare = null;
+            }
+        });
+    </script>
+</body>
+</html>
