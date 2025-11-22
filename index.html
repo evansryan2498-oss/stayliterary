@@ -70,6 +70,12 @@
             </svg>
         );
         
+        const Heart = () => (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+        );
+        
         const Star = ({ size = 20, fill = 'none', stroke = 'currentColor', strokeWidth = 2 }) => (
             <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke={stroke} strokeWidth={strokeWidth}>
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
@@ -91,6 +97,7 @@
             const [selectedCategory, setSelectedCategory] = useState('Casual');
             const [currentSquare, setCurrentSquare] = useState(null);
             const [bookTitle, setBookTitle] = useState('');
+            const [bookAuthor, setBookAuthor] = useState('');
             const [userData, setUserData] = useState({});
             const [favorites, setFavorites] = useState({});
             const [loading, setLoading] = useState(true);
@@ -135,7 +142,6 @@
                         const docData = doc.data();
                         const docId = doc.id;
                         
-                        // Parse document ID (format: "Name-Category-Index" or similar)
                         Object.keys(docData).forEach((key) => {
                             if (key.startsWith('square_')) {
                                 const squareIndex = key.replace('square_', '');
@@ -169,14 +175,14 @@
 
             const getSquareState = (index) => {
                 const key = `${getDocId()}-${index}`;
-                return userData[key] || { status: 'not-started', book: '' };
+                return userData[key] || { status: 'not-started', book: '', author: '' };
             };
 
-            const updateSquare = async (index, status, book = '') => {
+            const updateSquare = async (index, status, book = '', author = '') => {
                 const docId = getDocId();
                 const key = `${docId}-${index}`;
                 
-                const squareData = { status, book };
+                const squareData = { status, book, author };
                 setUserData(prev => ({
                     ...prev,
                     [key]: squareData
@@ -219,17 +225,40 @@
                 return favorites[key] || false;
             };
 
+            const getAllFavorites = () => {
+                const favList = [];
+                
+                Object.keys(favorites).forEach(key => {
+                    if (favorites[key]) {
+                        const data = userData[key];
+                        if (data && data.book) {
+                            const parts = key.split('-');
+                            const name = parts[0];
+                            favList.push({
+                                book: data.book,
+                                author: data.author || '',
+                                reader: name
+                            });
+                        }
+                    }
+                });
+                
+                return favList;
+            };
+
             const handleSquareClick = (index) => {
                 if (!selectedName) return;
                 setCurrentSquare(index);
                 const state = getSquareState(index);
                 setBookTitle(state.book || '');
+                setBookAuthor(state.author || '');
             };
 
             const handleUpdateBook = async () => {
                 if (bookTitle.trim() && currentSquare !== null) {
-                    await updateSquare(currentSquare, 'in-progress', bookTitle);
+                    await updateSquare(currentSquare, 'in-progress', bookTitle, bookAuthor);
                     setBookTitle('');
+                    setBookAuthor('');
                     setCurrentSquare(null);
                 }
             };
@@ -237,7 +266,7 @@
             const handleMarkComplete = async () => {
                 if (currentSquare !== null) {
                     const state = getSquareState(currentSquare);
-                    await updateSquare(currentSquare, 'complete', state.book);
+                    await updateSquare(currentSquare, 'complete', state.book, state.author);
                     setCurrentSquare(null);
                 }
             };
@@ -247,7 +276,7 @@
                     const docId = getDocId();
                     const key = `${docId}-${currentSquare}`;
                     
-                    await updateSquare(currentSquare, 'not-started', '');
+                    await updateSquare(currentSquare, 'not-started', '', '');
                     
                     setFavorites(prev => {
                         const newFavorites = { ...prev };
@@ -264,6 +293,7 @@
                     }
 
                     setBookTitle('');
+                    setBookAuthor('');
                     setCurrentSquare(null);
                 }
             };
@@ -309,7 +339,7 @@
                     color: '#879fbf'
                 }}>
                     <header style={{
-                        padding: '1rem',
+                        padding: '0.5rem 1rem',
                         borderBottom: '2px solid #879fbf',
                         display: 'flex',
                         justifyContent: 'center',
@@ -323,9 +353,9 @@
                             src="https://raw.githubusercontent.com/evansryan2498-oss/stayliterary/mobile-optimized-backup/StayLitLogo.png"
                             alt="Stay Literary"
                             style={{
-                                height: 'clamp(80px, 12vw, 140px)',
+                                height: 'clamp(100px, 15vw, 160px)',
                                 width: 'auto',
-                                maxWidth: '90%'
+                                maxWidth: '95%'
                             }}
                         />
                         <button
@@ -378,6 +408,7 @@
                                 <nav style={{ marginTop: '3rem' }}>
                                     {[
                                         { id: 'home', label: 'Home', icon: BookOpen },
+                                        { id: 'favorites', label: 'Favorites', icon: Heart },
                                         { id: 'parameters', label: 'Parameters', icon: Info },
                                         { id: 'points', label: 'Point System', icon: Award }
                                     ].map(({ id, label, icon: Icon }) => (
@@ -503,7 +534,7 @@
                                     <div style={{
                                         display: 'grid',
                                         gridTemplateColumns: 
-                                            isMobile && selectedCategory === 'Casual' 
+                                            isMobile && (selectedCategory === 'Casual' || selectedCategory === 'Ambitious')
                                                 ? 'repeat(2, 1fr)' 
                                                 : `repeat(${gridSize}, 1fr)`,
                                         gap: 'clamp(0.75rem, 2vw, 1.25rem)',
@@ -649,6 +680,85 @@
                             </>
                         )}
 
+                        {currentPage === 'favorites' && (
+                            <div style={{
+                                backgroundColor: '#fff',
+                                padding: 'clamp(1.5rem, 5vw, 2.5rem)',
+                                borderRadius: '12px',
+                                boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+                                overflowX: 'auto'
+                            }}>
+                                <h2 style={{ 
+                                    fontSize: 'clamp(1.75rem, 5vw, 2.25rem)', 
+                                    marginBottom: '1.75rem',
+                                    fontWeight: 600
+                                }}>
+                                    Favorites
+                                </h2>
+                                {getAllFavorites().length === 0 ? (
+                                    <p style={{ 
+                                        fontSize: 'clamp(1.1rem, 3vw, 1.25rem)',
+                                        color: '#879fbf',
+                                        fontStyle: 'italic'
+                                    }}>
+                                        No favorites yet! Star some books to see them here.
+                                    </p>
+                                ) : (
+                                    <table style={{
+                                        width: '100%',
+                                        borderCollapse: 'collapse',
+                                        fontSize: 'clamp(1rem, 2.5vw, 1.15rem)'
+                                    }}>
+                                        <thead>
+                                            <tr style={{ 
+                                                backgroundColor: '#f0fffc',
+                                                borderBottom: '2px solid #879fbf'
+                                            }}>
+                                                <th style={{ 
+                                                    padding: '1rem',
+                                                    textAlign: 'left',
+                                                    fontWeight: 600,
+                                                    color: '#879fbf'
+                                                }}>Book</th>
+                                                <th style={{ 
+                                                    padding: '1rem',
+                                                    textAlign: 'left',
+                                                    fontWeight: 600,
+                                                    color: '#879fbf'
+                                                }}>Author</th>
+                                                <th style={{ 
+                                                    padding: '1rem',
+                                                    textAlign: 'left',
+                                                    fontWeight: 600,
+                                                    color: '#879fbf'
+                                                }}>Reader</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {getAllFavorites().map((fav, index) => (
+                                                <tr key={index} style={{
+                                                    borderBottom: '1px solid #e0e0e0'
+                                                }}>
+                                                    <td style={{ 
+                                                        padding: '1rem',
+                                                        color: '#879fbf'
+                                                    }}>{fav.book}</td>
+                                                    <td style={{ 
+                                                        padding: '1rem',
+                                                        color: '#879fbf'
+                                                    }}>{fav.author || '—'}</td>
+                                                    <td style={{ 
+                                                        padding: '1rem',
+                                                        color: '#879fbf'
+                                                    }}>{fav.reader}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                )}
+                            </div>
+                        )}
+
                         {currentPage === 'parameters' && (
                             <div style={{
                                 backgroundColor: '#fff',
@@ -763,6 +873,22 @@
                                     value={bookTitle}
                                     onChange={(e) => setBookTitle(e.target.value)}
                                     placeholder="Enter book title..."
+                                    style={{
+                                        width: '100%',
+                                        padding: '1rem',
+                                        fontSize: '1.1rem',
+                                        border: '2px solid #879fbf',
+                                        borderRadius: '10px',
+                                        marginBottom: '1rem',
+                                        fontFamily: "'Crimson Text', serif",
+                                        outline: 'none'
+                                    }}
+                                />
+                                <input
+                                    type="text"
+                                    value={bookAuthor}
+                                    onChange={(e) => setBookAuthor(e.target.value)}
+                                    placeholder="Enter author (optional)..."
                                     style={{
                                         width: '100%',
                                         padding: '1rem',
