@@ -3,637 +3,752 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stay Lit(erary) - Reading Bingo 2025</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Playfair Display', serif;
-            background-color: #fffefc;
-            color: #879fbf;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        h1 {
-            text-align: center;
-            font-size: 3rem;
-            margin-bottom: 2rem;
-            color: #879fbf;
-        }
-        
-        .controls {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .control-group {
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        label {
-            display: block;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            color: #879fbf;
-        }
-        
-        select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #879fbf;
-            border-radius: 8px;
-            background: white;
-            color: #879fbf;
-            font-family: 'Playfair Display', serif;
-            font-size: 1rem;
-        }
-        
-        .bingo-grid {
-            display: grid;
-            gap: 0.75rem;
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 2px solid #879fbf;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        
-        .bingo-square {
-            position: relative;
-            aspect-ratio: 1;
-            border: 2px solid #ffd4b3;
-            background-color: #ffe5d0;
-            border-radius: 8px;
-            padding: 0.75rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .bingo-square:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .bingo-square.in-progress {
-            background-color: #cfe2ff;
-            border-color: #9ec5ff;
-        }
-        
-        .bingo-square.complete {
-            background-color: #d4edda;
-            border-color: #a3d9b1;
-        }
-        
-        .square-text {
-            font-size: 0.85rem;
-            color: #879fbf;
-            line-height: 1.3;
-        }
-        
-        .book-title {
-            font-size: 0.7rem;
-            color: #879fbf;
-            opacity: 0.8;
-            margin-top: 0.5rem;
-            font-style: italic;
-        }
-        
-        .menu-button {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(255,255,255,0.7);
-            border: none;
-            border-radius: 4px;
-            padding: 4px;
-            cursor: pointer;
-            z-index: 2;
-        }
-        
-        .menu-button:hover {
-            background: rgba(255,255,255,0.9);
-        }
-        
-        .checkmark {
-            position: absolute;
-            top: 4px;
-            left: 4px;
-            color: #28a745;
-            font-size: 1.2rem;
-            z-index: 2;
-        }
-        
-        .dropdown-menu {
-            position: absolute;
-            top: 32px;
-            right: 4px;
-            background: white;
-            border: 2px solid #879fbf;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            min-width: 150px;
-            z-index: 10;
-        }
-        
-        .dropdown-menu button {
-            width: 100%;
-            padding: 0.75rem;
-            border: none;
-            background: none;
-            text-align: left;
-            cursor: pointer;
-            color: #879fbf;
-            font-family: 'Playfair Display', serif;
-        }
-        
-        .dropdown-menu button:hover {
-            background-color: #f0f8ff;
-        }
-        
-        .dropdown-menu button.danger {
-            color: #dc3545;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal.active {
-            display: flex;
-        }
-        
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            max-width: 400px;
-            width: 90%;
-            border: 2px solid #879fbf;
-        }
-        
-        .modal-content h3 {
-            margin-bottom: 1rem;
-            color: #879fbf;
-        }
-        
-        .modal-content input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #879fbf;
-            border-radius: 8px;
-            font-family: 'Playfair Display', serif;
-            margin-bottom: 1rem;
-        }
-        
-        .modal-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .modal-buttons button {
-            flex: 1;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 8px;
-            font-family: 'Playfair Display', serif;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        
-        .btn-primary {
-            background-color: #879fbf;
-            color: white;
-        }
-        
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-        
-        .legend {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #879fbf;
-        }
-        
-        .legend-box {
-            width: 20px;
-            height: 20px;
-            border: 2px solid;
-            border-radius: 4px;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: #879fbf;
-            opacity: 0.6;
-            font-size: 1.2rem;
-        }
-        
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .square-text {
-                font-size: 0.7rem;
-            }
-            
-            .book-title {
-                font-size: 0.6rem;
-            }
-        }
-    </style>
+    <title>Stay Literary - Book Bingo 2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Stay Lit(erary)</h1>
-        
-        <div class="controls">
-            <div class="control-group">
-                <label>Select Your Name</label>
-                <select id="nameSelect">
-                    <option value="">Choose your name...</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label>Select Category</label>
-                <select id="categorySelect">
-                    <option value="Casual">Casual (5×5)</option>
-                    <option value="Ambitious">Ambitious (4×4)</option>
-                    <option value="Elite">Elite (3×3)</option>
-                </select>
-            </div>
-        </div>
-        
-        <div id="bingoGrid"></div>
-        
-        <div class="legend" id="legend" style="display: none;">
-            <div class="legend-item">
-                <div class="legend-box" style="background-color: #ffe5d0; border-color: #ffd4b3;"></div>
-                <span>Not Started</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-box" style="background-color: #cfe2ff; border-color: #9ec5ff;"></div>
-                <span>In Progress</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-box" style="background-color: #d4edda; border-color: #a3d9b1;"></div>
-                <span>Complete</span>
-            </div>
-        </div>
-    </div>
+    <div id="root"></div>
     
-    <div class="modal" id="bookModal">
-        <div class="modal-content">
-            <h3>Update Book</h3>
-            <input type="text" id="bookInput" placeholder="Enter book title...">
-            <div class="modal-buttons">
-                <button class="btn-primary" id="saveBook">Save</button>
-                <button class="btn-secondary" id="cancelBook">Cancel</button>
-            </div>
-        </div>
-    </div>
+    <script type="text/babel">
+        const { useState } = React;
+        
+        // Lucide icons as inline SVG components
+        const Menu = () => (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        );
+        
+        const X = () => (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        );
+        
+        const BookOpen = () => (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+        );
+        
+        const Info = () => (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+        );
+        
+        const Award = () => (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="8" r="7"></circle>
+                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+            </svg>
+        );
+        
+        const Star = ({ size = 20, fill = 'none', stroke = 'currentColor', strokeWidth = 2 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke={stroke} strokeWidth={strokeWidth}>
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+        );
+        
+        const MoreVertical = ({ size = 18, stroke = 'currentColor' }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth="2">
+                <circle cx="12" cy="12" r="1"></circle>
+                <circle cx="12" cy="5" r="1"></circle>
+                <circle cx="12" cy="19" r="1"></circle>
+            </svg>
+        );
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        const BookBingoApp = () => {
+            const [currentPage, setCurrentPage] = useState('home');
+            const [menuOpen, setMenuOpen] = useState(false);
+            const [selectedName, setSelectedName] = useState('');
+            const [selectedCategory, setSelectedCategory] = useState('Casual');
+            const [currentSquare, setCurrentSquare] = useState(null);
+            const [bookTitle, setBookTitle] = useState('');
+            const [userData, setUserData] = useState({});
+            const [favorites, setFavorites] = useState({});
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDl4gVieR0SFncspang1wig6UMnFXeVJUI",
-            authDomain: "stay-literary.firebaseapp.com",
-            projectId: "stay-literary",
-            storageBucket: "stay-literary.firebasestorage.app",
-            messagingSenderId: "13003449670",
-            appId: "1:13003449670:web:0ef767734aad1fa5243147"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        const NAMES = [
-            "Ryan Evans",
-            "Jac Evans",
-            "Ashley Crouthamel",
-            "Leila McGraw",
-            "Chris McGraw",
-            "Kim Beasley",
-            "Jared Beasley",
-            "Beth Palmer"
-        ];
-
-        const CATEGORIES = {
-            'Casual': {
-                gridCols: 5,
-                squares: [
-                    "Mythology/Fairytale Retelling",
-                    "Book by an Author Who is No Longer Alive",
-                    "Debut Author",
-                    "Book About a Piece of Media You Love (TV Show, Movie, Band, etc)",
-                    "Book Chosen Solely Based on the Cover",
-                    "A Classic You've Never Read",
-                    "Book Adapted Into a Movie/TV Series",
-                    "Childhood Classic",
-                    "Published in the Year You Were Born",
-                    "Set in the Distant Future",
-                    "Genre You Don't Usually Read",
-                    "Read a Book by Listening to the Audiobook",
-                    "Ask Three People What They Are Currently Reading",
-                    "Speculative Fiction (Beyond Realism, Imaginative Elements)",
-                    "BIPOC Author",
-                    "Graphic Novel or Manga",
-                    "Read a Book With a Friend",
-                    "Author Not From the US",
-                    "Roll a Die to Determine What to Read: 1) Romance 2) Sci-Fi 3) Mystery 4) High Fantasy 5) Historical Fiction 6) Adventure",
-                    "Written by the other Gender",
-                    "Mystery or Thriller",
-                    "A Book with an Animal as a Character",
-                    "One Word Title",
-                    "Fantasy (High or Low)",
-                    "Short Story Collection"
-                ]
-            },
-            'Ambitious': {
-                gridCols: 4,
-                squares: [
-                    "Published Between 1940 and 1969",
-                    "Villain as a Protagonist",
-                    "Memoir, Biography, or Autobiography",
-                    "Published in 2025",
-                    "Book with Multiple Points of View",
-                    "Non-fiction on a New Subject",
-                    "Indigenous Author",
-                    "A Book Someone Whose Name Has 3 Syllables Recommended",
-                    "Author Who Won a Literary Prize",
-                    "Read a Book with 2 or More Friends",
-                    "Translated Work",
-                    "Independently Published",
-                    "Book Written by an LGBTQIA+ Author",
-                    "Staff Pick From an Indie Bookstore",
-                    "Book Tackling Social Issue(s)",
-                    "A Book with Non-linear Narrative or Time Structure"
-                ]
-            },
-            'Elite': {
-                gridCols: 3,
-                squares: [
-                    "Complete the Middle Square on the Casual Card...Then Read One of Those Books",
-                    "Written Before 1910",
-                    "Read a Book on Theme with a Heritage/History Month, in that Month",
-                    "Have Someone Blindly Give You a Book Recommendation",
-                    "Read a Trilogy, or 3 Books by the Same Author",
-                    "Read a Book as a Part of a Book Club",
-                    "Banned Book",
-                    "Read 40+ Books in 2026",
-                    "Pulitzer Prize Winner"
-                ]
-            }
-        };
-
-        let currentName = '';
-        let currentCategory = 'Casual';
-        let cardData = {};
-        let activeMenu = null;
-        let editingSquare = null;
-
-        // Initialize
-        const nameSelect = document.getElementById('nameSelect');
-        const categorySelect = document.getElementById('categorySelect');
-        const bingoGrid = document.getElementById('bingoGrid');
-        const legend = document.getElementById('legend');
-        const bookModal = document.getElementById('bookModal');
-        const bookInput = document.getElementById('bookInput');
-        const saveBookBtn = document.getElementById('saveBook');
-        const cancelBookBtn = document.getElementById('cancelBook');
-
-        // Populate names
-        NAMES.forEach(name => {
-            const option = document.createElement('option');
-            option.value = name;
-            option.textContent = name;
-            nameSelect.appendChild(option);
-        });
-
-        nameSelect.addEventListener('change', async (e) => {
-            currentName = e.target.value;
-            await loadCard();
-        });
-
-        categorySelect.addEventListener('change', async (e) => {
-            currentCategory = e.target.value;
-            await loadCard();
-        });
-
-        async function loadCard() {
-            if (!currentName) {
-                bingoGrid.innerHTML = '<div class="empty-state">Select your name to view your bingo card</div>';
-                legend.style.display = 'none';
-                return;
-            }
-
-            legend.style.display = 'flex';
+            const users = ['Ryan', 'Jac', 'Ashley C', 'Kim', 'Beth', 'Leila', 'Chris', 'Sam', 'Michael', 'Charles', 'Ashley W', 'Jared', 'Wendy', 'Haven', 'Tracy', 'Travis', 'Lauren', 'Jordan', 'Jenny', 'Esa', 'Angela'];
             
-            try {
-                const docRef = doc(db, 'cards', `${currentName}-${currentCategory}`);
-                const docSnap = await getDoc(docRef);
-                
-                if (docSnap.exists()) {
-                    cardData = docSnap.data();
-                } else {
-                    cardData = {};
-                }
-            } catch (error) {
-                console.error('Error loading card:', error);
-                cardData = {};
-            }
+            const casualCategories = [
+                'A book with a one-word title',
+                'A book set in a different country',
+                'A book by an author of color',
+                'A book with a number in the title',
+                'A debut novel',
+                'A book with a blue cover',
+                'A book under 200 pages',
+                'A book recommended by a friend',
+                'A book that became a movie',
+                'A book from the library',
+                'A reread',
+                'A book with a map',
+                'A book by a local author',
+                'A book published this year',
+                'A book with magic',
+                'A book about family',
+                'A graphic novel',
+                'A book of poetry',
+                'A memoir',
+                'A book with food on the cover',
+                'A book set in winter',
+                'A mystery or thriller',
+                'A romance',
+                'A book with time travel',
+                'A book over 500 pages'
+            ];
 
-            renderGrid();
-        }
-
-        function renderGrid() {
-            const category = CATEGORIES[currentCategory];
-            bingoGrid.className = 'bingo-grid';
-            bingoGrid.style.gridTemplateColumns = `repeat(${category.gridCols}, 1fr)`;
-            
-            bingoGrid.innerHTML = '';
-            
-            category.squares.forEach((square, index) => {
-                const squareData = cardData[index] || { status: 'incomplete', book: '' };
-                
-                const squareDiv = document.createElement('div');
-                squareDiv.className = `bingo-square ${squareData.status}`;
-                
-                squareDiv.innerHTML = `
-                    <button class="menu-button" data-index="${index}">⋮</button>
-                    ${squareData.status === 'complete' ? '<span class="checkmark">✓</span>' : ''}
-                    <div class="square-text">${square}</div>
-                    ${squareData.book ? `<div class="book-title">${squareData.book}</div>` : ''}
-                `;
-                
-                bingoGrid.appendChild(squareDiv);
-            });
-
-            // Add event listeners
-            document.querySelectorAll('.menu-button').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const index = parseInt(btn.dataset.index);
-                    showMenu(index, btn);
-                });
-            });
-
-            // Close menus when clicking outside
-            document.addEventListener('click', closeAllMenus);
-        }
-
-        function showMenu(index, button) {
-            closeAllMenus();
-            
-            const menu = document.createElement('div');
-            menu.className = 'dropdown-menu';
-            menu.innerHTML = `
-                <button data-action="update" data-index="${index}">Update Book</button>
-                <button data-action="complete" data-index="${index}">Mark ${cardData[index]?.status === 'complete' ? 'Incomplete' : 'Complete'}</button>
-                <button class="danger" data-action="clear" data-index="${index}">Clear</button>
-            `;
-            
-            button.parentElement.appendChild(menu);
-            activeMenu = menu;
-
-            menu.querySelectorAll('button').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const action = btn.dataset.action;
-                    const idx = parseInt(btn.dataset.index);
-                    handleMenuAction(action, idx);
-                });
-            });
-        }
-
-        function closeAllMenus() {
-            if (activeMenu) {
-                activeMenu.remove();
-                activeMenu = null;
-            }
-        }
-
-        function handleMenuAction(action, index) {
-            closeAllMenus();
-            
-            switch(action) {
-                case 'update':
-                    editingSquare = index;
-                    bookInput.value = cardData[index]?.book || '';
-                    bookModal.classList.add('active');
-                    bookInput.focus();
-                    break;
-                case 'complete':
-                    toggleComplete(index);
-                    break;
-                case 'clear':
-                    clearSquare(index);
-                    break;
-            }
-        }
-
-        async function toggleComplete(index) {
-            const current = cardData[index] || { status: 'incomplete', book: '' };
-            cardData[index] = {
-                ...current,
-                status: current.status === 'complete' ? 'in-progress' : 'complete'
+            const getGridSize = () => {
+                if (selectedCategory === 'Casual') return 5;
+                if (selectedCategory === 'Ambitious') return 4;
+                return 3;
             };
-            await saveCard();
-            renderGrid();
-        }
 
-        async function clearSquare(index) {
-            delete cardData[index];
-            await saveCard();
-            renderGrid();
-        }
+            const getSquareState = (index) => {
+                const key = `${selectedName}-${selectedCategory}-${index}`;
+                return userData[key] || { status: 'not-started', book: '' };
+            };
 
-        async function saveCard() {
-            if (!currentName) return;
-            
-            try {
-                const docRef = doc(db, 'cards', `${currentName}-${currentCategory}`);
-                await setDoc(docRef, cardData);
-            } catch (error) {
-                console.error('Error saving card:', error);
-                alert('Failed to save. Please try again.');
-            }
-        }
+            const updateSquare = (index, status, book = '') => {
+                const key = `${selectedName}-${selectedCategory}-${index}`;
+                setUserData(prev => ({
+                    ...prev,
+                    [key]: { status, book }
+                }));
+            };
 
-        saveBookBtn.addEventListener('click', async () => {
-            if (bookInput.value.trim() && editingSquare !== null) {
-                cardData[editingSquare] = {
-                    ...cardData[editingSquare],
-                    book: bookInput.value.trim(),
-                    status: 'in-progress'
-                };
-                await saveCard();
-                renderGrid();
-            }
-            bookModal.classList.remove('active');
-            editingSquare = null;
-        });
+            const toggleFavorite = (index, e) => {
+                e.stopPropagation();
+                const key = `${selectedName}-${selectedCategory}-${index}`;
+                const state = getSquareState(index);
+                
+                if (!state.book) return;
+                
+                setFavorites(prev => ({
+                    ...prev,
+                    [key]: !prev[key]
+                }));
+            };
 
-        cancelBookBtn.addEventListener('click', () => {
-            bookModal.classList.remove('active');
-            editingSquare = null;
-        });
+            const isFavorited = (index) => {
+                const key = `${selectedName}-${selectedCategory}-${index}`;
+                return favorites[key] || false;
+            };
 
-        bookInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                saveBookBtn.click();
-            }
-        });
+            const handleSquareClick = (index) => {
+                if (!selectedName) return;
+                setCurrentSquare(index);
+                const state = getSquareState(index);
+                setBookTitle(state.book || '');
+            };
 
-        // Close modal when clicking outside
-        bookModal.addEventListener('click', (e) => {
-            if (e.target === bookModal) {
-                bookModal.classList.remove('active');
-                editingSquare = null;
-            }
-        });
+            const handleUpdateBook = () => {
+                if (bookTitle.trim() && currentSquare !== null) {
+                    updateSquare(currentSquare, 'in-progress', bookTitle);
+                    setBookTitle('');
+                    setCurrentSquare(null);
+                }
+            };
+
+            const handleMarkComplete = () => {
+                if (currentSquare !== null) {
+                    const state = getSquareState(currentSquare);
+                    updateSquare(currentSquare, 'complete', state.book);
+                    setCurrentSquare(null);
+                }
+            };
+
+            const handleClear = () => {
+                if (currentSquare !== null) {
+                    const key = `${selectedName}-${selectedCategory}-${currentSquare}`;
+                    updateSquare(currentSquare, 'not-started', '');
+                    setFavorites(prev => {
+                        const newFavorites = { ...prev };
+                        delete newFavorites[key];
+                        return newFavorites;
+                    });
+                    setBookTitle('');
+                    setCurrentSquare(null);
+                }
+            };
+
+            const getSquareColor = (status) => {
+                if (status === 'complete') return '#e8ffe9';
+                if (status === 'in-progress') return '#fdf4e9';
+                return '#f0fffc';
+            };
+
+            const getBorderColor = (status) => {
+                if (status === 'complete') return '#c8e6c9';
+                if (status === 'in-progress') return '#f4e4c1';
+                return '#c7f2ed';
+            };
+
+            const gridSize = getGridSize();
+            const categories = casualCategories.slice(0, gridSize * gridSize);
+            const isMobile = window.innerWidth < 768;
+
+            return (
+                <div style={{
+                    minHeight: '100vh',
+                    backgroundColor: '#fffefc',
+                    fontFamily: "'Crimson Text', serif",
+                    color: '#879fbf'
+                }}>
+                    <header style={{
+                        padding: '1rem',
+                        borderBottom: '2px solid #879fbf',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        position: 'sticky',
+                        top: 0,
+                        backgroundColor: '#fffefc',
+                        zIndex: 100
+                    }}>
+                        <img 
+                            src="https://raw.githubusercontent.com/evansryan2498-oss/stayliterary/mobile-optimized-backup/StayLitLogo.png"
+                            alt="Stay Literary"
+                            style={{
+                                height: 'clamp(40px, 8vw, 60px)',
+                                width: 'auto'
+                            }}
+                        />
+                        <button
+                            onClick={() => setMenuOpen(!menuOpen)}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                padding: '0.5rem',
+                                color: '#879fbf',
+                                display: 'flex',
+                                alignItems: 'center'
+                            }}
+                        >
+                            {menuOpen ? <X /> : <Menu />}
+                        </button>
+                    </header>
+
+                    {menuOpen && (
+                        <>
+                            <div style={{
+                                position: 'fixed',
+                                top: 0,
+                                right: 0,
+                                width: '70%',
+                                maxWidth: '300px',
+                                height: '100vh',
+                                backgroundColor: '#fffefc',
+                                boxShadow: '-2px 0 10px rgba(0,0,0,0.1)',
+                                zIndex: 200,
+                                padding: '1rem',
+                                overflowY: 'auto'
+                            }}>
+                                <button
+                                    onClick={() => setMenuOpen(false)}
+                                    style={{
+                                        position: 'absolute',
+                                        top: '1rem',
+                                        right: '1rem',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        color: '#879fbf'
+                                    }}
+                                >
+                                    <X />
+                                </button>
+                                <nav style={{ marginTop: '3rem' }}>
+                                    {[
+                                        { id: 'home', label: 'Home', icon: BookOpen },
+                                        { id: 'parameters', label: 'Parameters', icon: Info },
+                                        { id: 'points', label: 'Point System', icon: Award }
+                                    ].map(({ id, label, icon: Icon }) => (
+                                        <button
+                                            key={id}
+                                            onClick={() => {
+                                                setCurrentPage(id);
+                                                setMenuOpen(false);
+                                            }}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '1rem',
+                                                width: '100%',
+                                                padding: '1rem',
+                                                marginBottom: '0.5rem',
+                                                background: currentPage === id ? '#ebfffe' : 'transparent',
+                                                border: 'none',
+                                                borderRadius: '8px',
+                                                cursor: 'pointer',
+                                                fontSize: '1.2rem',
+                                                color: '#879fbf',
+                                                textAlign: 'left',
+                                                fontFamily: "'Crimson Text', serif"
+                                            }}
+                                        >
+                                            <Icon />
+                                            {label}
+                                        </button>
+                                    ))}
+                                </nav>
+                            </div>
+                            <div
+                                onClick={() => setMenuOpen(false)}
+                                style={{
+                                    position: 'fixed',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    backgroundColor: 'rgba(0,0,0,0.3)',
+                                    zIndex: 150
+                                }}
+                            />
+                        </>
+                    )}
+
+                    <main style={{ padding: '1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
+                        {currentPage === 'home' && (
+                            <>
+                                <div style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '1.5rem',
+                                    marginBottom: '2rem'
+                                }}>
+                                    <div>
+                                        <label style={{
+                                            display: 'block',
+                                            marginBottom: '0.75rem',
+                                            fontSize: '1.2rem',
+                                            fontWeight: 600
+                                        }}>
+                                            Name
+                                        </label>
+                                        <select
+                                            value={selectedName}
+                                            onChange={(e) => setSelectedName(e.target.value)}
+                                            style={{
+                                                width: '100%',
+                                                padding: '1rem',
+                                                fontSize: '1.1rem',
+                                                border: 'none',
+                                                borderBottom: '2px solid #879fbf',
+                                                borderRadius: '0',
+                                                backgroundColor: 'transparent',
+                                                color: '#879fbf',
+                                                fontFamily: "'Crimson Text', serif",
+                                                cursor: 'pointer',
+                                                outline: 'none'
+                                            }}
+                                        >
+                                            <option value="">Choose your name...</option>
+                                            {users.map(name => (
+                                                <option key={name} value={name}>{name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label style={{
+                                            display: 'block',
+                                            marginBottom: '0.75rem',
+                                            fontSize: '1.2rem',
+                                            fontWeight: 600
+                                        }}>
+                                            Card Tier
+                                        </label>
+                                        <select
+                                            value={selectedCategory}
+                                            onChange={(e) => setSelectedCategory(e.target.value)}
+                                            style={{
+                                                width: '100%',
+                                                padding: '1rem',
+                                                fontSize: '1.1rem',
+                                                border: 'none',
+                                                borderBottom: '2px solid #879fbf',
+                                                borderRadius: '0',
+                                                backgroundColor: 'transparent',
+                                                color: '#879fbf',
+                                                fontFamily: "'Crimson Text', serif",
+                                                cursor: 'pointer',
+                                                outline: 'none'
+                                            }}
+                                        >
+                                            <option value="Casual">Casual</option>
+                                            <option value="Ambitious">Ambitious</option>
+                                            <option value="Elite">Elite</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {selectedName && (
+                                    <div style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: 
+                                            isMobile && selectedCategory === 'Casual' 
+                                                ? 'repeat(2, 1fr)' 
+                                                : `repeat(${gridSize}, 1fr)`,
+                                        gap: 'clamp(0.75rem, 2vw, 1.25rem)',
+                                        marginBottom: '2rem'
+                                    }}>
+                                        {categories.map((category, index) => {
+                                            const state = getSquareState(index);
+                                            const favorited = isFavorited(index);
+                                            return (
+                                                <div
+                                                    key={index}
+                                                    style={{
+                                                        backgroundColor: getSquareColor(state.status),
+                                                        border: `2px solid ${getBorderColor(state.status)}`,
+                                                        borderRadius: '12px',
+                                                        padding: 'clamp(0.75rem, 3vw, 1.25rem)',
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
+                                                        textAlign: 'center',
+                                                        minHeight: 'clamp(100px, 22vw, 140px)',
+                                                        transition: 'all 0.2s',
+                                                        position: 'relative'
+                                                    }}
+                                                >
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleSquareClick(index);
+                                                        }}
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: '0.5rem',
+                                                            right: '0.5rem',
+                                                            background: 'rgba(255, 255, 255, 0.8)',
+                                                            border: 'none',
+                                                            borderRadius: '50%',
+                                                            width: '28px',
+                                                            height: '28px',
+                                                            cursor: 'pointer',
+                                                            padding: '0',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            zIndex: 10,
+                                                            transition: 'background 0.2s'
+                                                        }}
+                                                    >
+                                                        <MoreVertical size={18} stroke="#879fbf" />
+                                                    </button>
+
+                                                    {state.book && (
+                                                        <button
+                                                            onClick={(e) => toggleFavorite(index, e)}
+                                                            style={{
+                                                                position: 'absolute',
+                                                                top: '0.5rem',
+                                                                left: '0.5rem',
+                                                                background: 'none',
+                                                                border: 'none',
+                                                                cursor: 'pointer',
+                                                                padding: '0.25rem',
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                zIndex: 10
+                                                            }}
+                                                        >
+                                                            <Star 
+                                                                size={20} 
+                                                                fill={favorited ? '#ffd700' : 'none'}
+                                                                stroke={favorited ? '#ffd700' : '#879fbf'}
+                                                                strokeWidth={2}
+                                                            />
+                                                        </button>
+                                                    )}
+                                                    
+                                                    {state.status === 'complete' && (
+                                                        <div style={{
+                                                            position: 'absolute',
+                                                            bottom: '0.5rem',
+                                                            right: '0.5rem',
+                                                            fontSize: '1.5rem',
+                                                            color: '#4caf50'
+                                                        }}>
+                                                            ✓
+                                                        </div>
+                                                    )}
+                                                    
+                                                    <div style={{
+                                                        fontSize: 'clamp(0.95rem, 2.8vw, 1.15rem)',
+                                                        fontWeight: 600,
+                                                        marginBottom: state.book ? '0.5rem' : 0,
+                                                        lineHeight: 1.3
+                                                    }}>
+                                                        {category}
+                                                    </div>
+                                                    {state.book && (
+                                                        <div style={{
+                                                            fontSize: 'clamp(0.85rem, 2.3vw, 1rem)',
+                                                            fontStyle: 'italic',
+                                                            opacity: 0.85,
+                                                            lineHeight: 1.2
+                                                        }}>
+                                                            {state.book}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+
+                                {selectedName && (
+                                    <div style={{
+                                        display: 'flex',
+                                        flexWrap: 'wrap',
+                                        gap: '1.25rem',
+                                        justifyContent: 'center',
+                                        padding: '1.25rem',
+                                        backgroundColor: '#f8f9fa',
+                                        borderRadius: '12px'
+                                    }}>
+                                        {[
+                                            { label: 'Not Started', color: '#f0fffc', border: '#c7f2ed' },
+                                            { label: 'In Progress', color: '#fdf4e9', border: '#f4e4c1' },
+                                            { label: 'Complete', color: '#e8ffe9', border: '#c8e6c9' }
+                                        ].map(({ label, color, border }) => (
+                                            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                                                <div style={{
+                                                    width: '28px',
+                                                    height: '28px',
+                                                    backgroundColor: color,
+                                                    border: `2px solid ${border}`,
+                                                    borderRadius: '6px'
+                                                }} />
+                                                <span style={{ fontSize: 'clamp(1rem, 2.8vw, 1.15rem)' }}>{label}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </>
+                        )}
+
+                        {currentPage === 'parameters' && (
+                            <div style={{
+                                backgroundColor: '#fff',
+                                padding: 'clamp(1.5rem, 5vw, 2.5rem)',
+                                borderRadius: '12px',
+                                boxShadow: '0 2px 12px rgba(0,0,0,0.08)'
+                            }}>
+                                <h2 style={{ 
+                                    fontSize: 'clamp(1.75rem, 5vw, 2.25rem)', 
+                                    marginBottom: '1.75rem',
+                                    fontWeight: 600
+                                }}>
+                                    Parameters
+                                </h2>
+                                <div style={{ 
+                                    fontSize: 'clamp(1.1rem, 3vw, 1.25rem)', 
+                                    lineHeight: 1.9
+                                }}>
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <span style={{ color: '#879fbf', marginRight: '0.75rem' }}>—</span>
+                                        Any format of reading counts - physical book, audiobook, or ebook.
+                                    </div>
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <span style={{ color: '#879fbf', marginRight: '0.75rem' }}>—</span>
+                                        The goal is to get bingo, but to qualify for a prize you will need to 'blackout' a bingo card.
+                                    </div>
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <span style={{ color: '#879fbf', marginRight: '0.75rem' }}>—</span>
+                                        You can use one book for multiple spots on different tiered bingo cards.
+                                    </div>
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <span style={{ color: '#879fbf', marginRight: '0.75rem' }}>—</span>
+                                        You cannot use one book for multiple spots on the same bingo card.
+                                    </div>
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <span style={{ color: '#879fbf', marginRight: '0.75rem' }}>—</span>
+                                        Kindly do not judge others for what they read, how they read, or how much they read.
+                                    </div>
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <span style={{ color: '#879fbf', marginRight: '0.75rem' }}>—</span>
+                                        Inclusivity is paramount to 'staying lit(erary).'
+                                    </div>
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <span style={{ color: '#879fbf', marginRight: '0.75rem' }}>—</span>
+                                        You cannot reuse a book from another grid for the Bonus Card. It is a standalone card and requires unique titles.
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {currentPage === 'points' && (
+                            <div style={{
+                                backgroundColor: '#fff',
+                                padding: 'clamp(1.5rem, 5vw, 2.5rem)',
+                                borderRadius: '12px',
+                                boxShadow: '0 2px 12px rgba(0,0,0,0.08)'
+                            }}>
+                                <h2 style={{ 
+                                    fontSize: 'clamp(1.75rem, 5vw, 2.25rem)', 
+                                    marginBottom: '1.75rem',
+                                    fontWeight: 600
+                                }}>
+                                    Point System
+                                </h2>
+                                <p style={{ 
+                                    fontSize: 'clamp(1.1rem, 3vw, 1.25rem)', 
+                                    lineHeight: 1.9 
+                                }}>
+                                    Point system details coming soon!
+                                </p>
+                            </div>
+                        )}
+                    </main>
+
+                    {currentSquare !== null && (
+                        <>
+                            <div
+                                onClick={() => setCurrentSquare(null)}
+                                style={{
+                                    position: 'fixed',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    backgroundColor: 'rgba(0,0,0,0.5)',
+                                    zIndex: 300
+                                }}
+                            />
+                            <div style={{
+                                position: 'fixed',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                backgroundColor: '#fff',
+                                borderRadius: '16px',
+                                padding: 'clamp(1.75rem, 5vw, 2.5rem)',
+                                width: '90%',
+                                maxWidth: '450px',
+                                zIndex: 400,
+                                boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
+                            }}>
+                                <h3 style={{
+                                    fontSize: 'clamp(1.4rem, 4vw, 1.75rem)',
+                                    marginBottom: '1.25rem',
+                                    color: '#879fbf',
+                                    fontWeight: 600
+                                }}>
+                                    Update Square
+                                </h3>
+                                <input
+                                    type="text"
+                                    value={bookTitle}
+                                    onChange={(e) => setBookTitle(e.target.value)}
+                                    placeholder="Enter book title..."
+                                    style={{
+                                        width: '100%',
+                                        padding: '1rem',
+                                        fontSize: '1.1rem',
+                                        border: '2px solid #879fbf',
+                                        borderRadius: '10px',
+                                        marginBottom: '1.25rem',
+                                        fontFamily: "'Crimson Text', serif",
+                                        outline: 'none'
+                                    }}
+                                />
+                                <div style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '0.85rem'
+                                }}>
+                                    <button
+                                        onClick={handleUpdateBook}
+                                        disabled={!bookTitle.trim()}
+                                        style={{
+                                            padding: '1rem',
+                                            fontSize: '1.1rem',
+                                            backgroundColor: bookTitle.trim() ? '#879fbf' : '#ccc',
+                                            color: '#fff',
+                                            border: 'none',
+                                            borderRadius: '10px',
+                                            cursor: bookTitle.trim() ? 'pointer' : 'not-allowed',
+                                            fontWeight: 600,
+                                            fontFamily: "'Crimson Text', serif",
+                                            transition: 'all 0.2s'
+                                        }}
+                                    >
+                                        Save Book
+                                    </button>
+                                    <button
+                                        onClick={handleMarkComplete}
+                                        style={{
+                                            padding: '1rem',
+                                            fontSize: '1.1rem',
+                                            backgroundColor: '#e8ffe9',
+                                            color: '#2e7d32',
+                                            border: '2px solid #c8e6c9',
+                                            borderRadius: '10px',
+                                            cursor: 'pointer',
+                                            fontWeight: 600,
+                                            fontFamily: "'Crimson Text', serif",
+                                            transition: 'all 0.2s'
+                                        }}
+                                    >
+                                        Mark Complete
+                                    </button>
+                                    <button
+                                        onClick={handleClear}
+                                        style={{
+                                            padding: '1rem',
+                                            fontSize: '1.1rem',
+                                            backgroundColor: '#fff',
+                                            color: '#879fbf',
+                                            border: '2px solid #879fbf',
+                                            borderRadius: '10px',
+                                            cursor: 'pointer',
+                                            fontWeight: 600,
+                                            fontFamily: "'Crimson Text', serif",
+                                            transition: 'all 0.2s'
+                                        }}
+                                    >
+                                        Clear
+                                    </button>
+                                    <button
+                                        onClick={() => setCurrentSquare(null)}
+                                        style={{
+                                            padding: '1rem',
+                                            fontSize: '1.1rem',
+                                            backgroundColor: '#f8f9fa',
+                                            color: '#6c757d',
+                                            border: 'none',
+                                            borderRadius: '10px',
+                                            cursor: 'pointer',
+                                            fontFamily: "'Crimson Text', serif",
+                                            transition: 'all 0.2s'
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </div>
+            );
+        };
+
+        ReactDOM.render(<BookBingoApp />, document.getElementById('root'));
     </script>
 </body>
 </html>
