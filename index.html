@@ -208,19 +208,21 @@
                         padding: '1rem',
                         borderBottom: '2px solid #879fbf',
                         display: 'flex',
-                        justifyContent: 'space-between',
+                        justifyContent: 'center',
                         alignItems: 'center',
                         position: 'sticky',
                         top: 0,
                         backgroundColor: '#fffefc',
-                        zIndex: 100
+                        zIndex: 100,
+                        position: 'relative'
                     }}>
                         <img 
                             src="https://raw.githubusercontent.com/evansryan2498-oss/stayliterary/mobile-optimized-backup/StayLitLogo.png"
                             alt="Stay Literary"
                             style={{
-                                height: 'clamp(40px, 8vw, 60px)',
-                                width: 'auto'
+                                height: 'clamp(60px, 10vw, 100px)',
+                                width: 'auto',
+                                maxWidth: '80%'
                             }}
                         />
                         <button
@@ -232,7 +234,9 @@
                                 padding: '0.5rem',
                                 color: '#879fbf',
                                 display: 'flex',
-                                alignItems: 'center'
+                                alignItems: 'center',
+                                position: 'absolute',
+                                right: '1rem'
                             }}
                         >
                             {menuOpen ? <X /> : <Menu />}
