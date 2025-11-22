@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stay Literary - Book Bingo 2025</title>
+    <title>Stay Lit Book Bingo</title>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -102,7 +102,7 @@
             const [favorites, setFavorites] = useState({});
             const [loading, setLoading] = useState(true);
 
-            const users = ['Ryan', 'Jac', 'Ashley C', 'Kim', 'Beth', 'Leila', 'Chris', 'Sam', 'Michael', 'Charles', 'Ashley W', 'Jared', 'Wendy', 'Haven', 'Tracy', 'Travis', 'Lauren', 'Jordan', 'Jenny', 'Esa', 'Angela'];
+            const users = ['Ryan Evans', 'Jac Evans', 'Ashley Crouthamel', 'Kim Beasley', 'Beth Palmer', 'Leila McGraw', 'Chris McGraw', 'Sam DiNardo', 'Michael Wilcher', 'Charles Sharman', 'Ashley Weekley', 'Jared Beasley', 'Wendy Hall', 'Haven Hall', 'Tracy Mills', 'Travis Jones', 'Lauren Bowen', 'Jordan Crouthamel', 'Jenny Robertson', 'Isa Monell', 'Angela Wilcox', 'Jen Satterfield'];
             
             const casualCategories = [
                 'A book with a one-word title',
@@ -339,7 +339,7 @@
                     color: '#879fbf'
                 }}>
                     <header style={{
-                        padding: '0.5rem 1rem',
+                        padding: '0.25rem 1rem',
                         borderBottom: '2px solid #879fbf',
                         display: 'flex',
                         justifyContent: 'center',
@@ -349,15 +349,27 @@
                         backgroundColor: '#fffefc',
                         zIndex: 100
                     }}>
-                        <img 
-                            src="https://raw.githubusercontent.com/evansryan2498-oss/stayliterary/mobile-optimized-backup/StayLitLogo.png"
-                            alt="Stay Literary"
-                            style={{
-                                height: 'clamp(100px, 15vw, 160px)',
-                                width: 'auto',
-                                maxWidth: '95%'
+                        <a 
+                            href="#"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setCurrentPage('home');
                             }}
-                        />
+                            style={{
+                                display: 'block',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            <img 
+                                src="https://raw.githubusercontent.com/evansryan2498-oss/stayliterary/mobile-optimized-backup/StayLitLogo.png"
+                                alt="Stay Literary"
+                                style={{
+                                    height: 'clamp(110px, 16vw, 180px)',
+                                    width: 'auto',
+                                    maxWidth: '95%'
+                                }}
+                            />
+                        </a>
                         <button
                             onClick={() => setMenuOpen(!menuOpen)}
                             style={{
