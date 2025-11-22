@@ -228,16 +228,22 @@
             const getAllFavorites = () => {
                 const favList = [];
                 
+                // Only include books that are explicitly favorited (favorites[key] === true)
                 Object.keys(favorites).forEach(key => {
-                    if (favorites[key]) {
+                    if (favorites[key] === true) {
                         const data = userData[key];
                         if (data && data.book) {
                             const parts = key.split('-');
-                            const name = parts[0];
+                            // Handle names with spaces (first and last name)
+                            const categoryIndex = parts.findIndex(p => 
+                                p === 'Casual' || p === 'Ambitious' || p === 'Elite'
+                            );
+                            const name = parts.slice(0, categoryIndex).join('-');
+                            
                             favList.push({
                                 book: data.book,
                                 author: data.author || '',
-                                reader: name
+                                reader: name.replace(/-/g, ' ')
                             });
                         }
                     }
@@ -339,7 +345,7 @@
                     color: '#879fbf'
                 }}>
                     <header style={{
-                        padding: '0.25rem 1rem',
+                        padding: '0.15rem 1rem',
                         borderBottom: '2px solid #879fbf',
                         display: 'flex',
                         justifyContent: 'center',
@@ -357,16 +363,18 @@
                             }}
                             style={{
                                 display: 'block',
-                                cursor: 'pointer'
+                                cursor: 'pointer',
+                                lineHeight: 0
                             }}
                         >
                             <img 
                                 src="https://raw.githubusercontent.com/evansryan2498-oss/stayliterary/mobile-optimized-backup/StayLitLogo.png"
                                 alt="Stay Literary"
                                 style={{
-                                    height: 'clamp(110px, 16vw, 180px)',
+                                    height: 'clamp(130px, 18vw, 200px)',
                                     width: 'auto',
-                                    maxWidth: '95%'
+                                    maxWidth: '95%',
+                                    display: 'block'
                                 }}
                             />
                         </a>
