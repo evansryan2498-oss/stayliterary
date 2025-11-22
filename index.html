@@ -8,12 +8,29 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div id="root"></div>
     
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useEffect } = React;
+        
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDl4gVieR0SFncspang1wig6UMnFXeVJUI",
+            authDomain: "stay-literary.firebaseapp.com",
+            projectId: "stay-literary",
+            storageBucket: "stay-literary.firebasestorage.app",
+            messagingSenderId: "13003449670",
+            appId: "1:13003449670:web:0ef767734aad1fa5243147"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
         
         // Lucide icons as inline SVG components
         const Menu = () => (
@@ -76,6 +93,7 @@
             const [bookTitle, setBookTitle] = useState('');
             const [userData, setUserData] = useState({});
             const [favorites, setFavorites] = useState({});
+            const [loading, setLoading] = useState(true);
 
             const users = ['Ryan', 'Jac', 'Ashley C', 'Kim', 'Beth', 'Leila', 'Chris', 'Sam', 'Michael', 'Charles', 'Ashley W', 'Jared', 'Wendy', 'Haven', 'Tracy', 'Travis', 'Lauren', 'Jordan', 'Jenny', 'Esa', 'Angela'];
             
@@ -107,40 +125,97 @@
                 'A book over 500 pages'
             ];
 
+            // Load data from Firebase
+            useEffect(() => {
+                const unsubscribe = db.collection('cards').onSnapshot((snapshot) => {
+                    const data = {};
+                    const favs = {};
+                    
+                    snapshot.forEach((doc) => {
+                        const docData = doc.data();
+                        const docId = doc.id;
+                        
+                        // Parse document ID (format: "Name-Category-Index" or similar)
+                        Object.keys(docData).forEach((key) => {
+                            if (key.startsWith('square_')) {
+                                const squareIndex = key.replace('square_', '');
+                                const fullKey = `${docId}-${squareIndex}`;
+                                data[fullKey] = docData[key];
+                            } else if (key.startsWith('favorite_')) {
+                                const squareIndex = key.replace('favorite_', '');
+                                const fullKey = `${docId}-${squareIndex}`;
+                                favs[fullKey] = docData[key];
+                            }
+                        });
+                    });
+                    
+                    setUserData(data);
+                    setFavorites(favs);
+                    setLoading(false);
+                });
+
+                return () => unsubscribe();
+            }, []);
+
             const getGridSize = () => {
                 if (selectedCategory === 'Casual') return 5;
                 if (selectedCategory === 'Ambitious') return 4;
                 return 3;
             };
 
+            const getDocId = () => {
+                return `${selectedName}-${selectedCategory}`;
+            };
+
             const getSquareState = (index) => {
-                const key = `${selectedName}-${selectedCategory}-${index}`;
+                const key = `${getDocId()}-${index}`;
                 return userData[key] || { status: 'not-started', book: '' };
             };
 
-            const updateSquare = (index, status, book = '') => {
-                const key = `${selectedName}-${selectedCategory}-${index}`;
+            const updateSquare = async (index, status, book = '') => {
+                const docId = getDocId();
+                const key = `${docId}-${index}`;
+                
+                const squareData = { status, book };
                 setUserData(prev => ({
                     ...prev,
-                    [key]: { status, book }
+                    [key]: squareData
                 }));
+
+                try {
+                    await db.collection('cards').doc(docId).set({
+                        [`square_${index}`]: squareData
+                    }, { merge: true });
+                } catch (error) {
+                    console.error('Error updating square:', error);
+                }
             };
 
-            const toggleFavorite = (index, e) => {
+            const toggleFavorite = async (index, e) => {
                 e.stopPropagation();
-                const key = `${selectedName}-${selectedCategory}-${index}`;
+                const docId = getDocId();
+                const key = `${docId}-${index}`;
                 const state = getSquareState(index);
                 
                 if (!state.book) return;
                 
+                const newFavStatus = !favorites[key];
                 setFavorites(prev => ({
                     ...prev,
-                    [key]: !prev[key]
+                    [key]: newFavStatus
                 }));
+
+                try {
+                    await db.collection('cards').doc(docId).set({
+                        [`favorite_${index}`]: newFavStatus
+                    }, { merge: true });
+                } catch (error) {
+                    console.error('Error updating favorite:', error);
+                }
             };
 
             const isFavorited = (index) => {
-                const key = `${selectedName}-${selectedCategory}-${index}`;
+                const key = `${getDocId()}-${index}`;
                 return favorites[key] || false;
             };
 
@@ -151,31 +226,43 @@
                 setBookTitle(state.book || '');
             };
 
-            const handleUpdateBook = () => {
+            const handleUpdateBook = async () => {
                 if (bookTitle.trim() && currentSquare !== null) {
-                    updateSquare(currentSquare, 'in-progress', bookTitle);
+                    await updateSquare(currentSquare, 'in-progress', bookTitle);
                     setBookTitle('');
                     setCurrentSquare(null);
                 }
             };
 
-            const handleMarkComplete = () => {
+            const handleMarkComplete = async () => {
                 if (currentSquare !== null) {
                     const state = getSquareState(currentSquare);
-                    updateSquare(currentSquare, 'complete', state.book);
+                    await updateSquare(currentSquare, 'complete', state.book);
                     setCurrentSquare(null);
                 }
             };
 
-            const handleClear = () => {
+            const handleClear = async () => {
                 if (currentSquare !== null) {
-                    const key = `${selectedName}-${selectedCategory}-${currentSquare}`;
-                    updateSquare(currentSquare, 'not-started', '');
+                    const docId = getDocId();
+                    const key = `${docId}-${currentSquare}`;
+                    
+                    await updateSquare(currentSquare, 'not-started', '');
+                    
                     setFavorites(prev => {
                         const newFavorites = { ...prev };
                         delete newFavorites[key];
                         return newFavorites;
                     });
+
+                    try {
+                        await db.collection('cards').doc(docId).update({
+                            [`favorite_${currentSquare}`]: firebase.firestore.FieldValue.delete()
+                        });
+                    } catch (error) {
+                        console.error('Error clearing favorite:', error);
+                    }
+
                     setBookTitle('');
                     setCurrentSquare(null);
                 }
@@ -197,6 +284,23 @@
             const categories = casualCategories.slice(0, gridSize * gridSize);
             const isMobile = window.innerWidth < 768;
 
+            if (loading) {
+                return (
+                    <div style={{
+                        minHeight: '100vh',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: '#fffefc',
+                        fontFamily: "'Crimson Text', serif",
+                        fontSize: '1.5rem',
+                        color: '#879fbf'
+                    }}>
+                        Loading...
+                    </div>
+                );
+            }
+
             return (
                 <div style={{
                     minHeight: '100vh',
@@ -213,8 +317,7 @@
                         position: 'sticky',
                         top: 0,
                         backgroundColor: '#fffefc',
-                        zIndex: 100,
-                        position: 'relative'
+                        zIndex: 100
                     }}>
                         <img 
                             src="https://raw.githubusercontent.com/evansryan2498-oss/stayliterary/mobile-optimized-backup/StayLitLogo.png"
