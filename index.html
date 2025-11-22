@@ -634,14 +634,26 @@
                                                         {category}
                                                     </div>
                                                     {state.book && (
-                                                        <div style={{
-                                                            fontSize: 'clamp(0.85rem, 2.3vw, 1rem)',
-                                                            fontStyle: 'italic',
-                                                            opacity: 0.85,
-                                                            lineHeight: 1.2
-                                                        }}>
-                                                            {state.book}
-                                                        </div>
+                                                        <>
+                                                            <div style={{
+                                                                fontSize: 'clamp(0.85rem, 2.3vw, 1rem)',
+                                                                fontStyle: 'italic',
+                                                                opacity: 0.85,
+                                                                lineHeight: 1.2,
+                                                                marginBottom: state.author ? '0.25rem' : 0
+                                                            }}>
+                                                                {state.book}
+                                                            </div>
+                                                            {state.author && (
+                                                                <div style={{
+                                                                    fontSize: 'clamp(0.75rem, 2vw, 0.9rem)',
+                                                                    opacity: 0.7,
+                                                                    lineHeight: 1.2
+                                                                }}>
+                                                                    by {state.author}
+                                                                </div>
+                                                            )}
+                                                        </>
                                                     )}
                                                 </div>
                                             );
