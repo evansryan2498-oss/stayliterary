@@ -102,34 +102,65 @@
             const [favorites, setFavorites] = useState({});
             const [loading, setLoading] = useState(true);
 
-            const users = ['Ryan Evans', 'Jac Evans', 'Ashley Crouthamel', 'Kim Beasley', 'Beth Palmer', 'Leila McGraw', 'Chris McGraw', 'Sam DiNardo', 'Michael Wilcher', 'Charles Sharman', 'Ashley Weekley', 'Jared Beasley', 'Wendy Hall', 'Haven Hall', 'Tracy Mills', 'Travis Jones', 'Lauren Bowen', 'Jordan Crouthamel', 'Jenny Robertson', 'Isa Monell', 'Angela Wilcox', 'Raquel Monell', 'Jen Satterfield'];
+            const users = ['Ryan Evans', 'Jac Evans', 'Ashley Crouthamel', 'Kim Beasley', 'Beth Palmer', 'Leila McGraw', 'Chris McGraw', 'Sam DiNardo', 'Michael Wilcher', 'Charles Sharman', 'Ashley Weekley', 'Jared Beasley', 'Wendy Hall', 'Haven Hall', 'Tracy Mills', 'Travis Jones', 'Lauren Bowen', 'Jordan Crouthamel', 'Jenny Robertson', 'Isa Monell', 'Angela Wilcox', 'Jen Satterfield'];
             
             const casualCategories = [
-                'A book with a one-word title',
-                'A book set in a different country',
-                'A book by an author of color',
-                'A book with a number in the title',
-                'A debut novel',
-                'A book with a blue cover',
-                'A book under 200 pages',
-                'A book recommended by a friend',
-                'A book that became a movie',
-                'A book from the library',
-                'A reread',
-                'A book with a map',
-                'A book by a local author',
-                'A book published this year',
-                'A book with magic',
-                'A book about family',
-                'A graphic novel',
-                'A book of poetry',
-                'A memoir',
-                'A book with food on the cover',
-                'A book set in winter',
-                'A mystery or thriller',
-                'A romance',
-                'A book with time travel',
-                'A book over 500 pages'
+                'Mythology/Fairytale Retelling',
+                'A Classic You've Never Read',
+                'Genre You Don't Usually Read',
+                'Graphic Novel or Manga',
+                'Mystery or Thriller',
+                'Book by an Author Who is No Longer Alive',
+                'Book Adapted Into a Movie/TV Series',
+                'Read a Book by Listening to the Audiobook',
+                'Read a Book With a Friend',
+                'A Book with an Animal as a Character',
+                'Debut Author',
+                'Childhood Classic',
+                'Ask Three People What They Are Curently Reading',
+                'Author Not From the US',
+                'One Word Title',
+                'Book About a Piece of Media You Love (TV Show, Movie, Band, etc)',
+                'Published in the Year You Were Born',
+                'Speculative Fiction (Beyond Realism, Imaginative Elements)',
+                'Roll a Die to Determine What to Read: 1) Romance 2) Sci-Fi 3) Mystery 4) High Fantasy 5 ) Historical Fiction 6) Adventure',
+                'Fantasy (High or Low)',
+                'Book Chosen Soley Based on the Cover',
+                'Set in the Distant Future',
+                'BIPOC Author',
+                'Written by the other Gender',
+                'Short Story Collection'
+            ];
+
+            const ambitiousCategories = [
+                'Published Between 1940 and 1969',
+                'Book with Multiple Points of View',
+                'Author Who Won a Literary Prize',
+                'Book Written by an LGBTQIA+ Author',
+                'Villain as a Protagonist',
+                'Non-fiction on a New Subject',
+                'Read a Book with 2 or More Friends',
+                'Staff Pick From an Indie Bookstore',
+                'Memoir, Biography, or Autobiography',
+                'Indigenous Author',
+                'Translated Work',
+                'Book Tackling Social Issue(s)',
+                'Published in 2025',
+                'A Book Someone Whose Name Has 3 Syllables Recommended',
+                'Independently Published',
+                'A Book with Non-linear Narrative or Time Structure'
+            ];
+
+            const eliteCategories = [
+                'Complete the Middle Square on the Casual Card...Then Read One of Those Books',
+                'Have Someone Blindly Give You a Book Recommendation',
+                'Banned Book',
+                'Written Before 1910',
+                'Read a Trilogy, or 3 Books by the Same Author',
+                'Read 40+ Books in 2026',
+                'Read a Book on Theme with a Heritage/History Month, in that Month',
+                'Read a Book as a Part of a Book Club',
+                'Pulitzer Prize Winner'
             ];
 
             // Load data from Firebase
@@ -167,6 +198,12 @@
                 if (selectedCategory === 'Casual') return 5;
                 if (selectedCategory === 'Ambitious') return 4;
                 return 3;
+            };
+
+            const getCategories = () => {
+                if (selectedCategory === 'Casual') return casualCategories;
+                if (selectedCategory === 'Ambitious') return ambitiousCategories;
+                return eliteCategories;
             };
 
             const getDocId = () => {
@@ -317,7 +354,7 @@
             };
 
             const gridSize = getGridSize();
-            const categories = casualCategories.slice(0, gridSize * gridSize);
+            const categories = getCategories();
             const isMobile = window.innerWidth < 768;
 
             if (loading) {
