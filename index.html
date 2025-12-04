@@ -90,7 +90,117 @@
             </svg>
         );
 
+        const LoginScreen = ({ onLogin }) => {
+            const [password, setPassword] = useState('');
+            const [error, setError] = useState(false);
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (password.toLowerCase() === 'mellon') {
+                    sessionStorage.setItem('stayLitAuthenticated', 'true');
+                    onLogin();
+                } else {
+                    setError(true);
+                    setPassword('');
+                    setTimeout(() => setError(false), 2000);
+                }
+            };
+
+            return (
+                <div style={{
+                    minHeight: '100vh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#fffefc',
+                    fontFamily: "'Crimson Text', serif",
+                    padding: '2rem'
+                }}>
+                    <img 
+                        src="https://raw.githubusercontent.com/evansryan2498-oss/stayliterary/main/StayLitLogoV2.png"
+                        alt="Stay Literary"
+                        style={{
+                            height: 'clamp(150px, 25vw, 250px)',
+                            width: 'auto',
+                            marginBottom: '3rem'
+                        }}
+                    />
+                    <form onSubmit={handleSubmit} style={{
+                        width: '100%',
+                        maxWidth: '400px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '1.5rem'
+                    }}>
+                        <div>
+                            <label style={{
+                                display: 'block',
+                                marginBottom: '0.75rem',
+                                fontSize: '1.3rem',
+                                fontWeight: 600,
+                                color: '#879fbf',
+                                textAlign: 'center'
+                            }}>
+                                Enter Password
+                            </label>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Password"
+                                autoFocus
+                                style={{
+                                    width: '100%',
+                                    padding: '1.25rem',
+                                    fontSize: '1.2rem',
+                                    border: error ? '2px solid #d32f2f' : '2px solid #879fbf',
+                                    borderRadius: '10px',
+                                    backgroundColor: '#fff',
+                                    color: '#879fbf',
+                                    fontFamily: "'Crimson Text', serif",
+                                    outline: 'none',
+                                    textAlign: 'center',
+                                    transition: 'border-color 0.2s'
+                                }}
+                            />
+                            {error && (
+                                <p style={{
+                                    color: '#d32f2f',
+                                    fontSize: '1rem',
+                                    marginTop: '0.5rem',
+                                    textAlign: 'center'
+                                }}>
+                                    Incorrect password. Please try again.
+                                </p>
+                            )}
+                        </div>
+                        <button
+                            type="submit"
+                            style={{
+                                padding: '1.25rem',
+                                fontSize: '1.2rem',
+                                backgroundColor: '#879fbf',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '10px',
+                                cursor: 'pointer',
+                                fontWeight: 600,
+                                fontFamily: "'Crimson Text', serif",
+                                transition: 'background-color 0.2s'
+                            }}
+                            onMouseOver={(e) => e.target.style.backgroundColor = '#6a8097'}
+                            onMouseOut={(e) => e.target.style.backgroundColor = '#879fbf'}
+                        >
+                            Enter
+                        </button>
+                    </form>
+                </div>
+            );
+        };
+
         const BookBingoApp = () => {
+            const [isAuthenticated, setIsAuthenticated] = useState(false);
             const [currentPage, setCurrentPage] = useState('home');
             const [menuOpen, setMenuOpen] = useState(false);
             const [selectedName, setSelectedName] = useState('');
@@ -101,6 +211,13 @@
             const [userData, setUserData] = useState({});
             const [favorites, setFavorites] = useState({});
             const [loading, setLoading] = useState(true);
+
+            useEffect(() => {
+                const authenticated = sessionStorage.getItem('stayLitAuthenticated');
+                if (authenticated === 'true') {
+                    setIsAuthenticated(true);
+                }
+            }, []);
 
             const users = ['Ryan Evans', 'Jac Evans', 'Ashley Crouthamel', 'Kim Beasley', 'Beth Palmer', 'Leila McGraw', 'Chris McGraw', 'Sam DiNardo', 'Michael Wilcher', 'Charles Sharman', 'Ashley Weekley', 'Jared Beasley', 'Wendy Hall', 'Haven Hall', 'Tracy Mills', 'Travis Jones', 'Lauren Bowen', 'Jordan Crouthamel', 'Jenny Robertson', 'Isa Monell', 'Angela Wilcox', 'Jen Satterfield'];
             
@@ -165,6 +282,8 @@
 
             // Load data from Firebase
             useEffect(() => {
+                if (!isAuthenticated) return;
+
                 const unsubscribe = db.collection('cards').onSnapshot((snapshot) => {
                     const data = {};
                     const favs = {};
@@ -192,7 +311,7 @@
                 });
 
                 return () => unsubscribe();
-            }, []);
+            }, [isAuthenticated]);
 
             const getGridSize = () => {
                 if (selectedCategory === 'Casual') return 5;
@@ -352,6 +471,10 @@
                 if (status === 'in-progress') return '#f4e4c1';
                 return '#c7f2ed';
             };
+
+            if (!isAuthenticated) {
+                return <LoginScreen onLogin={() => setIsAuthenticated(true)} />;
+            }
 
             const gridSize = getGridSize();
             const categories = getCategories();
