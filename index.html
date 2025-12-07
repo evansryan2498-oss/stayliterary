@@ -117,95 +117,102 @@
                     fontFamily: "'Crimson Text', serif",
                     padding: '2rem'
                 }}>
-                    <img 
-                        src="https://raw.githubusercontent.com/evansryan2498-oss/stayliterary/main/StayLitLogoV2.png"
-                        alt="Stay Literary"
-                        style={{
-                            height: 'clamp(150px, 25vw, 250px)',
-                            width: 'auto',
-                            marginBottom: '3rem'
-                        }}
-                    />
-                    <form onSubmit={handleSubmit} style={{
-                        width: '100%',
-                        maxWidth: '400px',
+                    <div style={{
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: '1.5rem'
+                        alignItems: 'center',
+                        width: '100%',
+                        maxWidth: '400px'
                     }}>
-                        <div>
-                            <label style={{
-                                display: 'block',
-                                marginBottom: '0.75rem',
-                                fontSize: '1.3rem',
-                                fontWeight: 600,
-                                color: '#879fbf',
-                                textAlign: 'center'
-                            }}>
-                                Enter Password
-                            </label>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Password"
-                                autoFocus
-                                style={{
-                                    width: '100%',
-                                    padding: '1.25rem',
-                                    fontSize: '1.2rem',
-                                    border: error ? '2px solid #d32f2f' : '2px solid #879fbf',
-                                    borderRadius: '10px',
-                                    backgroundColor: '#fff',
+                        <img 
+                            src="https://raw.githubusercontent.com/evansryan2498-oss/stayliterary/main/StayLitLogoV2.png"
+                            alt="Stay Literary"
+                            style={{
+                                height: 'clamp(150px, 25vw, 250px)',
+                                width: 'auto',
+                                marginBottom: '3rem'
+                            }}
+                        />
+                        <form onSubmit={handleSubmit} style={{
+                            width: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '1.5rem'
+                        }}>
+                            <div>
+                                <label style={{
+                                    display: 'block',
+                                    marginBottom: '0.75rem',
+                                    fontSize: '1.3rem',
+                                    fontWeight: 600,
                                     color: '#879fbf',
-                                    fontFamily: "'Crimson Text', serif",
-                                    outline: 'none',
-                                    textAlign: 'center',
-                                    transition: 'border-color 0.2s'
-                                }}
-                            />
-                            <p style={{
-                                fontSize: '0.9rem',
-                                fontStyle: 'italic',
-                                color: '#879fbf',
-                                opacity: 0.6,
-                                marginTop: '0.75rem',
-                                textAlign: 'center',
-                                lineHeight: 1.4
-                            }}>
-                                Ennyn Durin Aran StayLit. Pedo Mellon a Minno. Im Ryan hain echant. Celebrimbor o Eregion teithant i thiw hin.
-                            </p>
-                            {error && (
-                                <p style={{
-                                    color: '#d32f2f',
-                                    fontSize: '1rem',
-                                    marginTop: '0.5rem',
                                     textAlign: 'center'
                                 }}>
-                                    Incorrect password. Please try again.
+                                    Enter Password
+                                </label>
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Password"
+                                    autoFocus
+                                    style={{
+                                        width: '100%',
+                                        padding: '1.25rem',
+                                        fontSize: '1.2rem',
+                                        border: error ? '2px solid #d32f2f' : '2px solid #879fbf',
+                                        borderRadius: '10px',
+                                        backgroundColor: '#fff',
+                                        color: '#879fbf',
+                                        fontFamily: "'Crimson Text', serif",
+                                        outline: 'none',
+                                        textAlign: 'center',
+                                        transition: 'border-color 0.2s'
+                                    }}
+                                />
+                                <p style={{
+                                    fontSize: '0.9rem',
+                                    fontStyle: 'italic',
+                                    color: '#879fbf',
+                                    opacity: 0.6,
+                                    marginTop: '0.75rem',
+                                    textAlign: 'center',
+                                    lineHeight: 1.4
+                                }}>
+                                    Ennyn Durin Aran StayLit. Pedo Mellon a Minno. Im Ryan hain echant. Celebrimbor o Eregion teithant i thiw hin.
                                 </p>
-                            )}
-                        </div>
-                        <button
-                            type="submit"
-                            style={{
-                                padding: '1.25rem',
-                                fontSize: '1.2rem',
-                                backgroundColor: '#879fbf',
-                                color: '#fff',
-                                border: 'none',
-                                borderRadius: '10px',
-                                cursor: 'pointer',
-                                fontWeight: 600,
-                                fontFamily: "'Crimson Text', serif",
-                                transition: 'background-color 0.2s'
-                            }}
-                            onMouseOver={(e) => e.target.style.backgroundColor = '#6a8097'}
-                            onMouseOut={(e) => e.target.style.backgroundColor = '#879fbf'}
-                        >
-                            Enter
-                        </button>
-                    </form>
+                                {error && (
+                                    <p style={{
+                                        color: '#d32f2f',
+                                        fontSize: '1rem',
+                                        marginTop: '0.5rem',
+                                        textAlign: 'center'
+                                    }}>
+                                        Incorrect password. Please try again.
+                                    </p>
+                                )}
+                            </div>
+                            <button
+                                type="submit"
+                                style={{
+                                    padding: '1.25rem',
+                                    fontSize: '1.2rem',
+                                    backgroundColor: '#879fbf',
+                                    color: '#fff',
+                                    border: 'none',
+                                    borderRadius: '10px',
+                                    cursor: 'pointer',
+                                    fontWeight: 600,
+                                    fontFamily: "'Crimson Text', serif",
+                                    transition: 'background-color 0.2s'
+                                }}
+                                onMouseOver={(e) => e.target.style.backgroundColor = '#6a8097'}
+                                onMouseOut={(e) => e.target.style.backgroundColor = '#879fbf'}
+                            >
+                                Enter
+                            </button>
+                        </form>
+                    </div>
                 </div>
             );
         };
@@ -230,7 +237,7 @@
                 }
             }, []);
 
-            const users = ['Ryan Evans', 'Jac Evans', 'Ashley Crouthamel', 'Kim Beasley', 'Beth Palmer', 'Leila McGraw', 'Chris McGraw', 'Sam DiNardo', 'Michael Wilcher', 'Charles Sharman', 'Ashley Weekley', 'Jared Beasley', 'Wendy Hall', 'Haven Hall', 'Tracy Mills', 'Travis Jones', 'Lauren Bowen', 'Jordan Crouthamel', 'Jenny Robertson', 'Isa Monell', 'Angela Wilcox', 'Jen Satterfield'];
+            const users = ['Ryan Evans', 'Jac Evans', 'Ashley Crouthamel', 'Kim Beasley', 'Beth Palmer', 'Leila McGraw', 'Chris McGraw', 'Sam DiNardo', 'Michael Wilcher', 'Charles Sharman', 'Ashley Weekley', 'Jared Beasley', 'Wendy Hall', 'Haven Hall', 'Tracy Mills', 'Travis Jones', 'Lauren Bowen', 'Jordan Crouthamel', 'Jenny Robertson', 'Isa Monell', 'Angela Wilcox', 'Jen Satterfield', 'Raquel Monell', 'Josh Vogt', 'April Devoe', 'Kristen Phaneuf', 'Angelica Evans'];
             
             const casualCategories = [
                 'Mythology/Fairytale Retelling',
@@ -672,14 +679,23 @@
                                                 width: '100%',
                                                 padding: '1rem',
                                                 fontSize: '1.1rem',
-                                                border: 'none',
-                                                borderBottom: '2px solid #879fbf',
-                                                borderRadius: '0',
-                                                backgroundColor: 'transparent',
+                                                border: '2px solid #c7f2ed',
+                                                borderRadius: '10px',
+                                                backgroundColor: '#fffefc',
                                                 color: '#879fbf',
                                                 fontFamily: "'Crimson Text', serif",
                                                 cursor: 'pointer',
-                                                outline: 'none'
+                                                outline: 'none',
+                                                transition: 'all 0.2s ease',
+                                                boxShadow: '0 2px 4px rgba(135, 159, 191, 0.1)'
+                                            }}
+                                            onFocus={(e) => {
+                                                e.target.style.borderColor = '#879fbf';
+                                                e.target.style.boxShadow = '0 4px 8px rgba(135, 159, 191, 0.15)';
+                                            }}
+                                            onBlur={(e) => {
+                                                e.target.style.borderColor = '#c7f2ed';
+                                                e.target.style.boxShadow = '0 2px 4px rgba(135, 159, 191, 0.1)';
                                             }}
                                         >
                                             <option value="">Choose your name...</option>
@@ -704,14 +720,23 @@
                                                 width: '100%',
                                                 padding: '1rem',
                                                 fontSize: '1.1rem',
-                                                border: 'none',
-                                                borderBottom: '2px solid #879fbf',
-                                                borderRadius: '0',
-                                                backgroundColor: 'transparent',
+                                                border: '2px solid #c7f2ed',
+                                                borderRadius: '10px',
+                                                backgroundColor: '#fffefc',
                                                 color: '#879fbf',
                                                 fontFamily: "'Crimson Text', serif",
                                                 cursor: 'pointer',
-                                                outline: 'none'
+                                                outline: 'none',
+                                                transition: 'all 0.2s ease',
+                                                boxShadow: '0 2px 4px rgba(135, 159, 191, 0.1)'
+                                            }}
+                                            onFocus={(e) => {
+                                                e.target.style.borderColor = '#879fbf';
+                                                e.target.style.boxShadow = '0 4px 8px rgba(135, 159, 191, 0.15)';
+                                            }}
+                                            onBlur={(e) => {
+                                                e.target.style.borderColor = '#c7f2ed';
+                                                e.target.style.boxShadow = '0 2px 4px rgba(135, 159, 191, 0.1)';
                                             }}
                                         >
                                             <option value="Casual">Casual</option>
@@ -725,7 +750,7 @@
                                     <div style={{
                                         display: 'grid',
                                         gridTemplateColumns: 
-                                            isMobile && (selectedCategory === 'Casual' || selectedCategory === 'Ambitious')
+                                            isMobile 
                                                 ? 'repeat(2, 1fr)' 
                                                 : `repeat(${gridSize}, 1fr)`,
                                         gap: 'clamp(0.75rem, 2vw, 1.25rem)',
@@ -893,11 +918,21 @@
                             }}>
                                 <h2 style={{ 
                                     fontSize: 'clamp(1.75rem, 5vw, 2.25rem)', 
-                                    marginBottom: '1.75rem',
+                                    marginBottom: '1rem',
                                     fontWeight: 600
                                 }}>
                                     Favorites
                                 </h2>
+                                <p style={{
+                                    fontSize: 'clamp(1rem, 2.8vw, 1.15rem)',
+                                    color: '#879fbf',
+                                    marginBottom: '2rem',
+                                    lineHeight: 1.6,
+                                    fontStyle: 'italic',
+                                    opacity: 0.9
+                                }}>
+                                    Once you've completed a category, you can select the star in the top left corner and the book will be added to the Favorites page. This is a way to recommend your favorite book(s) to others!
+                                </p>
                                 {getAllFavorites().length === 0 ? (
                                     <p style={{ 
                                         fontSize: 'clamp(1.1rem, 3vw, 1.25rem)',
