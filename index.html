@@ -123,103 +123,99 @@
                     fontFamily: "'Crimson Text', serif",
                     padding: '2rem'
                 }}>
-                    <div style={{
+                    <img 
+                        src="https://raw.githubusercontent.com/evansryan2498-oss/stayliterary/main/StayLitLogoV2.png"
+                        alt="Stay Literary"
+                        style={{
+                            height: 'clamp(150px, 25vw, 250px)',
+                            width: 'auto',
+                            marginBottom: '3rem',
+                            display: 'block'
+                        }}
+                    />
+                    <form onSubmit={handleSubmit} style={{
+                        width: '100%',
+                        maxWidth: '400px',
                         display: 'flex',
                         flexDirection: 'column',
-                        alignItems: 'center',
-                        width: '100%',
-                        maxWidth: '500px'
+                        gap: '1.5rem'
                     }}>
-                        <img 
-                            src="https://raw.githubusercontent.com/evansryan2498-oss/stayliterary/main/StayLitLogoV2.png"
-                            alt="Stay Literary"
-                            style={{
-                                height: 'clamp(150px, 25vw, 250px)',
-                                width: 'auto',
-                                marginBottom: '3rem'
-                            }}
-                        />
-                        <form onSubmit={handleSubmit} style={{
-                            width: '100%',
-                            maxWidth: '400px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '1.5rem'
-                        }}>
-                            <div>
-                                <label style={{
-                                    display: 'block',
-                                    marginBottom: '0.75rem',
-                                    fontSize: '1.3rem',
-                                    fontWeight: 600,
-                                    color: '#879fbf',
-                                    textAlign: 'center'
-                                }}>
-                                    Enter Password
-                                </label>
-                                <input
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Password"
-                                    autoFocus
-                                    style={{
-                                        width: '100%',
-                                        padding: '1.25rem',
-                                        fontSize: '1.2rem',
-                                        border: error ? '2px solid #d32f2f' : '2px solid #879fbf',
-                                        borderRadius: '10px',
-                                        backgroundColor: '#fff',
-                                        color: '#879fbf',
-                                        fontFamily: "'Crimson Text', serif",
-                                        outline: 'none',
-                                        textAlign: 'center',
-                                        transition: 'border-color 0.2s'
-                                    }}
-                                />
-                                <p style={{
-                                    fontSize: '0.9rem',
-                                    fontStyle: 'italic',
-                                    color: '#879fbf',
-                                    opacity: 0.6,
-                                    marginTop: '0.75rem',
-                                    textAlign: 'center',
-                                    lineHeight: 1.4
-                                }}>
-                                    Ennyn Durin Aran StayLit. Pedo Mellon a Minno. Im Ryan hain echant. Celebrimbor o Eregion teithant i thiw hin.
-                                </p>
-                                {error && (
-                                    <p style={{
-                                        color: '#d32f2f',
-                                        fontSize: '1rem',
-                                        marginTop: '0.5rem',
-                                        textAlign: 'center'
-                                    }}>
-                                        Incorrect password. Please try again.
-                                    </p>
-                                )}
-                            </div>
-                            <button
-                                type="submit"
+                        <div>
+                            <label style={{
+                                display: 'block',
+                                marginBottom: '0.75rem',
+                                fontSize: '1.3rem',
+                                fontWeight: 600,
+                                color: '#879fbf',
+                                textAlign: 'center'
+                            }}>
+                                Enter Password
+                            </label>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Password"
+                                autoFocus
                                 style={{
+                                    width: '100%',
                                     padding: '1.25rem',
                                     fontSize: '1.2rem',
-                                    backgroundColor: '#879fbf',
-                                    color: '#fff',
-                                    border: 'none',
+                                    border: error ? '2px solid #d32f2f' : '2px solid #879fbf',
                                     borderRadius: '10px',
-                                    cursor: 'pointer',
-                                    fontWeight: 600,
+                                    backgroundColor: '#fff',
+                                    color: '#879fbf',
                                     fontFamily: "'Crimson Text', serif",
-                                    transition: 'background-color 0.2s'
+                                    outline: 'none',
+                                    textAlign: 'center',
+                                    transition: 'border-color 0.2s',
+                                    boxSizing: 'border-box'
                                 }}
-                                onMouseOver={(e) => e.target.style.backgroundColor = '#6a8097'}
-                                onMouseOut={(e) => e.target.style.backgroundColor = '#879fbf'}
-                            >
-                                Enter
-                            </button>
-                        </form>
-                    </div>
+                            />
+                            <p style={{
+                                fontSize: '0.9rem',
+                                fontStyle: 'italic',
+                                color: '#879fbf',
+                                opacity: 0.6,
+                                marginTop: '0.75rem',
+                                textAlign: 'center',
+                                lineHeight: 1.4
+                            }}>
+                                Ennyn Durin Aran StayLit. Pedo Mellon a Minno. Im Ryan hain echant. Celebrimbor o Eregion teithant i thiw hin.
+                            </p>
+                            {error && (
+                                <p style={{
+                                    color: '#d32f2f',
+                                    fontSize: '1rem',
+                                    marginTop: '0.5rem',
+                                    textAlign: 'center'
+                                }}>
+                                    Incorrect password. Please try again.
+                                </p>
+                            )}
+                        </div>
+                        <button
+                            type="submit"
+                            style={{
+                                width: '100%',
+                                padding: '1.25rem',
+                                fontSize: '1.2rem',
+                                backgroundColor: '#879fbf',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '10px',
+                                cursor: 'pointer',
+                                fontWeight: 600,
+                                fontFamily: "'Crimson Text', serif",
+                                transition: 'background-color 0.2s',
+                                boxSizing: 'border-box'
+                            }}
+                            onMouseOver={(e) => e.target.style.backgroundColor = '#6a8097'}
+                            onMouseOut={(e) => e.target.style.backgroundColor = '#879fbf'}
+                        >
+                            Enter
+                        </button>
+                    </form>
                 </div>
             );
         };
@@ -394,7 +390,8 @@
                                 color: '#879fbf',
                                 fontFamily: "'Crimson Text', serif",
                                 marginBottom: '0.75rem',
-                                outline: 'none'
+                                outline: 'none',
+                                boxSizing: 'border-box'
                             }}
                         />
                         <textarea
@@ -413,7 +410,8 @@
                                 resize: 'vertical',
                                 minHeight: '60px',
                                 marginBottom: '0.5rem',
-                                outline: 'none'
+                                outline: 'none',
+                                boxSizing: 'border-box'
                             }}
                         />
                         <div style={{
