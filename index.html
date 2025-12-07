@@ -96,184 +96,6 @@
             </svg>
         );
 
-        const CommentModal = ({ docId, squareIndex, onClose, selectedName }) => {
-            const [comments, setComments] = useState([]);
-            const [newComment, setNewComment] = useState('');
-            const [charCount, setCharCount] = useState(0);
-            const modalRef = useRef(null);
-            const MAX_CHARS = 150;
-
-            useEffect(() => {
-                loadComments();
-                
-                function handleClickOutside(event) {
-                    if (modalRef.current && !modalRef.current.contains(event.target)) {
-                        onClose();
-                    }
-                }
-                
-                document.addEventListener('mousedown', handleClickOutside);
-                return () => document.removeEventListener('mousedown', handleClickOutside);
-            }, []);
-
-            const loadComments = async () => {
-                const commentDocId = `${docId}-square_${squareIndex}`;
-                const doc = await db.collection('comments').doc(commentDocId).get();
-                if (doc.exists) {
-                    setComments(doc.data().comments || []);
-                }
-            };
-
-            const handleCommentChange = (e) => {
-                const text = e.target.value;
-                if (text.length <= MAX_CHARS) {
-                    setNewComment(text);
-                    setCharCount(text.length);
-                }
-            };
-
-            const handleSubmit = async () => {
-                if (!newComment.trim() || !selectedName) return;
-                
-                const comment = {
-                    author: selectedName,
-                    text: newComment.trim(),
-                    timestamp: new Date().toISOString()
-                };
-
-                const commentDocId = `${docId}-square_${squareIndex}`;
-                const updatedComments = [...comments, comment];
-                
-                await db.collection('comments').doc(commentDocId).set({
-                    comments: updatedComments
-                });
-
-                setComments(updatedComments);
-                setNewComment('');
-                setCharCount(0);
-            };
-
-            return (
-                <div
-                    ref={modalRef}
-                    style={{
-                        position: 'fixed',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        backgroundColor: '#fff',
-                        border: '2px solid #879fbf',
-                        borderRadius: '12px',
-                        padding: '1.5rem',
-                        width: '90%',
-                        maxWidth: '400px',
-                        maxHeight: '80vh',
-                        overflowY: 'auto',
-                        zIndex: 500,
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
-                    }}
-                >
-                    <h3 style={{
-                        color: '#879fbf',
-                        marginBottom: '1rem',
-                        fontSize: '1.3rem',
-                        fontWeight: 600
-                    }}>
-                        Comments
-                    </h3>
-                    
-                    <div style={{ marginBottom: '1rem', maxHeight: '200px', overflowY: 'auto' }}>
-                        {comments.length === 0 ? (
-                            <div style={{
-                                color: '#879fbf',
-                                opacity: 0.6,
-                                fontStyle: 'italic',
-                                textAlign: 'center',
-                                padding: '1rem'
-                            }}>
-                                No comments yet. Be the first!
-                            </div>
-                        ) : (
-                            comments.map((comment, idx) => (
-                                <div key={idx} style={{
-                                    backgroundColor: '#f8f9fa',
-                                    padding: '0.75rem',
-                                    borderRadius: '8px',
-                                    marginBottom: '0.75rem',
-                                    borderLeft: '3px solid #879fbf'
-                                }}>
-                                    <div style={{
-                                        color: '#879fbf',
-                                        fontWeight: 600,
-                                        marginBottom: '0.25rem',
-                                        fontSize: '0.95rem'
-                                    }}>
-                                        {comment.author}
-                                    </div>
-                                    <div style={{
-                                        color: '#879fbf',
-                                        fontSize: '0.95rem'
-                                    }}>
-                                        {comment.text}
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
-
-                    <div style={{ borderTop: '1px solid #e0e0e0', paddingTop: '1rem' }}>
-                        <textarea
-                            value={newComment}
-                            onChange={handleCommentChange}
-                            placeholder="Add a comment..."
-                            style={{
-                                width: '100%',
-                                padding: '0.75rem',
-                                fontSize: '1rem',
-                                border: '2px solid #c7f2ed',
-                                borderRadius: '8px',
-                                backgroundColor: '#fffefc',
-                                color: '#879fbf',
-                                fontFamily: "'Crimson Text', serif",
-                                resize: 'vertical',
-                                minHeight: '60px',
-                                marginBottom: '0.5rem',
-                                outline: 'none'
-                            }}
-                        />
-                        <div style={{
-                            fontSize: '0.85rem',
-                            color: charCount === MAX_CHARS ? '#d32f2f' : '#879fbf',
-                            opacity: 0.7,
-                            marginBottom: '0.5rem'
-                        }}>
-                            {charCount}/{MAX_CHARS}
-                        </div>
-                        <button
-                            onClick={handleSubmit}
-                            disabled={!newComment.trim()}
-                            style={{
-                                padding: '0.75rem 1.5rem',
-                                fontSize: '1rem',
-                                backgroundColor: newComment.trim() ? '#879fbf' : '#ccc',
-                                color: '#fff',
-                                border: 'none',
-                                borderRadius: '8px',
-                                cursor: newComment.trim() ? 'pointer' : 'not-allowed',
-                                fontWeight: 600,
-                                fontFamily: "'Crimson Text', serif"
-                            }}
-                        >
-                            Post Comment
-                        </button>
-                    </div>
-                </div>
-            );
-        };
-
-        ReactDOM.render(<BookBingoApp />, document.getElementById('root'));
-        };
-
         const LoginScreen = ({ onLogin }) => {
             const [password, setPassword] = useState('');
             const [error, setError] = useState(false);
@@ -394,6 +216,178 @@
             );
         };
 
+        const CommentModal = ({ docId, squareIndex, onClose, selectedName }) => {
+            const [comments, setComments] = useState([]);
+            const [newComment, setNewComment] = useState('');
+            const modalRef = useRef(null);
+            const MAX_CHARS = 150;
+
+            useEffect(() => {
+                loadComments();
+                
+                function handleClickOutside(event) {
+                    if (modalRef.current && !modalRef.current.contains(event.target)) {
+                        onClose();
+                    }
+                }
+                
+                document.addEventListener('mousedown', handleClickOutside);
+                return () => document.removeEventListener('mousedown', handleClickOutside);
+            }, []);
+
+            const loadComments = async () => {
+                const commentDocId = `${docId}-square_${squareIndex}`;
+                const doc = await db.collection('comments').doc(commentDocId).get();
+                if (doc.exists) {
+                    setComments(doc.data().comments || []);
+                }
+            };
+
+            const handleCommentChange = (e) => {
+                const text = e.target.value;
+                if (text.length <= MAX_CHARS) {
+                    setNewComment(text);
+                }
+            };
+
+            const handleSubmit = async () => {
+                if (!newComment.trim() || !selectedName) return;
+                
+                const comment = {
+                    author: selectedName,
+                    text: newComment.trim(),
+                    timestamp: new Date().toISOString()
+                };
+
+                const commentDocId = `${docId}-square_${squareIndex}`;
+                const updatedComments = [...comments, comment];
+                
+                await db.collection('comments').doc(commentDocId).set({
+                    comments: updatedComments
+                });
+
+                setComments(updatedComments);
+                setNewComment('');
+            };
+
+            return (
+                <div
+                    ref={modalRef}
+                    style={{
+                        position: 'fixed',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        backgroundColor: '#fff',
+                        border: '2px solid #879fbf',
+                        borderRadius: '12px',
+                        padding: '1.5rem',
+                        width: '90%',
+                        maxWidth: '400px',
+                        maxHeight: '80vh',
+                        overflowY: 'auto',
+                        zIndex: 500,
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
+                    }}
+                >
+                    <h3 style={{
+                        color: '#879fbf',
+                        marginBottom: '1rem',
+                        fontSize: '1.3rem',
+                        fontWeight: 600
+                    }}>
+                        Comments
+                    </h3>
+                    
+                    <div style={{ marginBottom: '1rem', maxHeight: '200px', overflowY: 'auto' }}>
+                        {comments.length === 0 ? (
+                            <div style={{
+                                color: '#879fbf',
+                                opacity: 0.6,
+                                fontStyle: 'italic',
+                                textAlign: 'center',
+                                padding: '1rem'
+                            }}>
+                                No comments yet. Be the first!
+                            </div>
+                        ) : (
+                            comments.map((comment, idx) => (
+                                <div key={idx} style={{
+                                    backgroundColor: '#f8f9fa',
+                                    padding: '0.75rem',
+                                    borderRadius: '8px',
+                                    marginBottom: '0.75rem',
+                                    borderLeft: '3px solid #879fbf'
+                                }}>
+                                    <div style={{
+                                        color: '#879fbf',
+                                        fontWeight: 600,
+                                        marginBottom: '0.25rem',
+                                        fontSize: '0.95rem'
+                                    }}>
+                                        {comment.author}
+                                    </div>
+                                    <div style={{
+                                        color: '#879fbf',
+                                        fontSize: '0.95rem'
+                                    }}>
+                                        {comment.text}
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+
+                    <div style={{ borderTop: '1px solid #e0e0e0', paddingTop: '1rem' }}>
+                        <textarea
+                            value={newComment}
+                            onChange={handleCommentChange}
+                            placeholder="Add a comment..."
+                            style={{
+                                width: '100%',
+                                padding: '0.75rem',
+                                fontSize: '1rem',
+                                border: '2px solid #c7f2ed',
+                                borderRadius: '8px',
+                                backgroundColor: '#fffefc',
+                                color: '#879fbf',
+                                fontFamily: "'Crimson Text', serif",
+                                resize: 'vertical',
+                                minHeight: '60px',
+                                marginBottom: '0.5rem',
+                                outline: 'none'
+                            }}
+                        />
+                        <div style={{
+                            fontSize: '0.85rem',
+                            color: newComment.length === MAX_CHARS ? '#d32f2f' : '#879fbf',
+                            opacity: 0.7,
+                            marginBottom: '0.5rem'
+                        }}>
+                            {newComment.length}/{MAX_CHARS}
+                        </div>
+                        <button
+                            onClick={handleSubmit}
+                            disabled={!newComment.trim()}
+                            style={{
+                                padding: '0.75rem 1.5rem',
+                                fontSize: '1rem',
+                                backgroundColor: newComment.trim() ? '#879fbf' : '#ccc',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '8px',
+                                cursor: newComment.trim() ? 'pointer' : 'not-allowed',
+                                fontWeight: 600,
+                                fontFamily: "'Crimson Text', serif"
+                            }}
+                        >
+                            Post Comment
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
         const BookBingoApp = () => {
             const [isAuthenticated, setIsAuthenticated] = useState(false);
             const [currentPage, setCurrentPage] = useState('home');
@@ -477,7 +471,6 @@
                 'Pulitzer Prize Winner'
             ];
 
-            // Load comment counts
             useEffect(() => {
                 if (!isAuthenticated) return;
 
@@ -496,7 +489,6 @@
                 loadCommentCounts();
             }, [isAuthenticated, commentModalOpen]);
 
-            // Load data from Firebase
             useEffect(() => {
                 if (!isAuthenticated) return;
 
@@ -962,6 +954,7 @@
                                             return (
                                                 <div
                                                     key={index}
+                                                    className="bingo-square"
                                                     style={{
                                                         backgroundColor: getSquareColor(state.status),
                                                         border: `2px solid ${getBorderColor(state.status)}`,
@@ -975,14 +968,6 @@
                                                         minHeight: 'clamp(100px, 22vw, 140px)',
                                                         transition: 'all 0.2s',
                                                         position: 'relative'
-                                                    }}
-                                                    onMouseEnter={(e) => {
-                                                        const bubble = e.currentTarget.querySelector('.comment-bubble');
-                                                        if (bubble && !isMobile) bubble.style.opacity = '1';
-                                                    }}
-                                                    onMouseLeave={(e) => {
-                                                        const bubble = e.currentTarget.querySelector('.comment-bubble');
-                                                        if (bubble && !isMobile && commentCount === 0) bubble.style.opacity = '0';
                                                     }}
                                                 >
                                                     <button
@@ -1070,7 +1055,7 @@
                                                             alignItems: 'center',
                                                             justifyContent: 'center',
                                                             zIndex: 10,
-                                                            opacity: isMobile || commentCount > 0 ? '1' : '0',
+                                                            opacity: commentCount > 0 ? '1' : '0',
                                                             transition: 'all 0.2s',
                                                             color: '#879fbf'
                                                         }}
@@ -1484,5 +1469,30 @@
                             />
                         </>
                     )}
+                    
+                    <style>
+                        {`
+                            .bingo-square .comment-bubble {
+                                opacity: 0 !important;
+                            }
+                            .bingo-square:hover .comment-bubble {
+                                opacity: 1 !important;
+                            }
+                            .comment-bubble:has(span) {
+                                opacity: 1 !important;
+                            }
+                            @media (max-width: 768px) {
+                                .bingo-square .comment-bubble {
+                                    opacity: 1 !important;
+                                }
+                            }
+                        `}
+                    </style>
                 </div>
             );
+        };
+
+        ReactDOM.render(<BookBingoApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
