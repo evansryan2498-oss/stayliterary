@@ -1068,63 +1068,21 @@
         />
     </div>
     <div>
-        <label style={{
-            display: 'block',
-            marginBottom: '0.75rem',
-            fontSize: '1.2rem',
-            fontWeight: 600
-        }}>
-            Card Tier
-        </label>
-        <div style={{ position: 'relative', width: '100%' }}>
-            <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                style={{
-                    width: '100%',
-                    padding: '1rem',
-                    paddingRight: '3rem',
-                    fontSize: '1.1rem',
-                    border: '2px solid #c7f2ed',
-                    borderRadius: '10px',
-                    backgroundColor: '#fffefc',
-                    color: '#879fbf',
-                    fontFamily: "'Crimson Text', serif",
-                    cursor: 'pointer',
-                    outline: 'none',
-                    transition: 'all 0.2s ease',
-                    boxShadow: '0 2px 4px rgba(135, 159, 191, 0.1)',
-                    appearance: 'none',
-                    WebkitAppearance: 'none',
-                    MozAppearance: 'none'
-                }}
-                onFocus={(e) => {
-                    e.target.style.borderColor = '#879fbf';
-                    e.target.style.boxShadow = '0 4px 8px rgba(135, 159, 191, 0.15)';
-                }}
-                onBlur={(e) => {
-                    e.target.style.borderColor = '#c7f2ed';
-                    e.target.style.boxShadow = '0 2px 4px rgba(135, 159, 191, 0.1)';
-                }}
-            >
-                <option value="Casual">Casual</option>
-                <option value="Ambitious">Ambitious</option>
-                <option value="Elite">Elite</option>
-            </select>
-            <div style={{
-                position: 'absolute',
-                right: '1rem',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                pointerEvents: 'none',
-                color: '#879fbf'
-            }}>
-                <ChevronDown />
-            </div>
-        </div>
-    </div>
+    <label style={{
+        display: 'block',
+        marginBottom: '0.75rem',
+        fontSize: '1.2rem',
+        fontWeight: 600
+    }}>
+        Card Tier
+    </label>
+    <SearchableDropdown
+        value={selectedCategory}
+        onChange={setSelectedCategory}
+        options={['Casual', 'Ambitious', 'Elite']}
+        placeholder="Choose card tier..."
+    />
 </div>
-
                                 {selectedName && (
                                     <div style={{
                                         display: 'grid',
