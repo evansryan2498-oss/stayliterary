@@ -832,12 +832,17 @@
             };
 
             const handleMarkComplete = async () => {
-                if (currentSquare !== null) {
-                    const state = getSquareState(currentSquare);
-                    await updateSquare(currentSquare, 'complete', state.book, state.author);
-                    setCurrentSquare(null);
-                }
-            };
+    if (currentSquare !== null) {
+        // Use the currently typed values if they exist, otherwise use saved state
+        const bookToSave = bookTitle.trim() || getSquareState(currentSquare).book;
+        const authorToSave = bookAuthor.trim() || getSquareState(currentSquare).author;
+        
+        await updateSquare(currentSquare, 'complete', bookToSave, authorToSave);
+        setBookTitle('');
+        setBookAuthor('');
+        setCurrentSquare(null);
+    }
+};
 
             const handleClear = async () => {
                 if (currentSquare !== null) {
