@@ -102,6 +102,14 @@
                 <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
         );
+        const HelpCircle = () => (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+        );
+        const SearchableDropdown = ({ value, onChange, options, placeholder }) => {
         const SearchableDropdown = ({ value, onChange, options, placeholder }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -999,6 +1007,7 @@
                                 <nav style={{ marginTop: '3rem' }}>
                                     {[
                                         { id: 'home', label: 'Home', icon: BookOpen },
+                                        { id: 'howto', label: 'How To', icon: HelpCircle },
                                         { id: 'favorites', label: 'Favorites', icon: Heart },
                                         { id: 'parameters', label: 'Parameters', icon: Info },
                                         { id: 'points', label: 'Point System', icon: Award }
@@ -1455,6 +1464,91 @@
                                 </p>
                             </div>
                         )}
+                        {currentPage === 'howto' && (
+    <div style={{
+        backgroundColor: '#fff',
+        padding: 'clamp(1.5rem, 5vw, 2.5rem)',
+        borderRadius: '12px',
+        boxShadow: '0 2px 12px rgba(0,0,0,0.08)'
+    }}>
+        <h2 style={{ 
+            fontSize: 'clamp(1.75rem, 5vw, 2.25rem)', 
+            marginBottom: '2rem',
+            fontWeight: 600,
+            color: '#879fbf'
+        }}>
+            Getting Started
+        </h2>
+        <ol style={{ 
+            fontSize: 'clamp(1.1rem, 3vw, 1.25rem)', 
+            lineHeight: 1.9,
+            paddingLeft: '1.5rem',
+            marginBottom: '2.5rem'
+        }}>
+            <li style={{ marginBottom: '0.5rem' }}>Enter password</li>
+            <li style={{ marginBottom: '0.5rem' }}>Find your name using the top drop-down menu (type to search)</li>
+            <li style={{ marginBottom: '0.5rem' }}>Select the Card Tier</li>
+        </ol>
+
+        <h2 style={{ 
+            fontSize: 'clamp(1.75rem, 5vw, 2.25rem)', 
+            marginBottom: '1.5rem',
+            marginTop: '2rem',
+            fontWeight: 600,
+            color: '#879fbf'
+        }}>
+            Adding Books
+        </h2>
+        <p style={{ 
+            fontSize: 'clamp(1.1rem, 3vw, 1.25rem)', 
+            lineHeight: 1.9,
+            marginBottom: '2.5rem'
+        }}>
+            Click the three dots (...) on any category → "Update Book" → Enter title and author → "Save"
+        </p>
+
+        <h2 style={{ 
+            fontSize: 'clamp(1.75rem, 5vw, 2.25rem)', 
+            marginBottom: '1.5rem',
+            fontWeight: 600,
+            color: '#879fbf'
+        }}>
+            Marking Complete
+        </h2>
+        <p style={{ 
+            fontSize: 'clamp(1.1rem, 3vw, 1.25rem)', 
+            lineHeight: 1.9,
+            marginBottom: '2.5rem'
+        }}>
+            Click the three dots (...) → "Mark Complete" (saves your book info and marks it complete in one click)
+        </p>
+
+        <h2 style={{ 
+            fontSize: 'clamp(1.75rem, 5vw, 2.25rem)', 
+            marginBottom: '1.5rem',
+            fontWeight: 600,
+            color: '#879fbf'
+        }}>
+            Favorites Star
+        </h2>
+        <ul style={{ 
+            fontSize: 'clamp(1.1rem, 3vw, 1.25rem)', 
+            lineHeight: 1.9,
+            paddingLeft: '1.5rem',
+            listStyleType: 'disc'
+        }}>
+            <li style={{ marginBottom: '0.75rem' }}>
+                Select the star (⭐) at the top left of any category to save it to the universal Favorites List.
+            </li>
+            <li style={{ marginBottom: '0.75rem' }}>
+                Selecting this star will automatically add the book, author, reader to the Favorites List.
+            </li>
+            <li style={{ marginBottom: '0.75rem' }}>
+                The Favorites List is found in the drop down menu (top right).
+            </li>
+        </ul>
+    </div>
+)}
                     </main>
 
                     {currentSquare !== null && (
