@@ -1420,7 +1420,6 @@
                                         </tbody>
                                     </table>
                                 )}
-                                </div>
                             </div>
                         )}
 
@@ -1469,8 +1468,9 @@
                                     <div style={{ marginBottom: '1rem' }}>
                                         <span style={{ color: '#879fbf', marginRight: '0.75rem' }}>—</span>
                                         You cannot reuse a book from another grid for the Bonus Card. It is a standalone card and requires unique titles.
+                                    </div>
+                                </div>
                             </div>
-                        </div>
                         )}
 
                         {currentPage === 'points' && (
@@ -1494,7 +1494,6 @@
                                     Point system details coming soon!
                                 </p>
                             </div>
-                        </div>
                         )}
                         {currentPage === 'howto' && (
     <div style={{
@@ -1596,7 +1595,6 @@
             Click the message bubble in the bottom right of any category to leave a comment. Feel free to comment on the cards of other readers too!
         </p>
     </div>
-</div>
 )}
                     {currentPage === 'bonus' && selectedName && (
     <div style={{
@@ -1662,65 +1660,81 @@
                         boxSizing: 'border-box'
                     }}
                 />
+            </div>
             <div style={{
-    marginBottom: '1rem'
-}}>
-    <label style={{
-        display: 'block',
-        fontSize: '0.9rem',
-        color: '#879fbf',
-        marginBottom: '0.5rem',
-        fontWeight: 600
-    }}>
-        Date Published (optional)
-    </label>
-    <input
-        type="date"
-        id="poem-published-input"
-        style={{
-            width: '100%',
-            padding: '0.75rem',
-            fontSize: '1rem',
-            border: '2px solid #c7f2ed',
-            borderRadius: '8px',
-            backgroundColor: '#fffefc',
-            color: '#879fbf',
-            fontFamily: "'Crimson Text', serif",
-            outline: 'none',
-            boxSizing: 'border-box'
-        }}
-    />
-</div>
+                display: 'grid',
+                gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+                gap: '1rem',
+                marginBottom: '1rem'
+            }}>
+                <input
+                    type="date"
+                    placeholder="Date Published"
+                    id="poem-published-input"
+                    style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        fontSize: '1rem',
+                        border: '2px solid #c7f2ed',
+                        borderRadius: '8px',
+                        backgroundColor: '#fffefc',
+                        color: '#879fbf',
+                        fontFamily: "'Crimson Text', serif",
+                        outline: 'none',
+                        boxSizing: 'border-box'
+                    }}
+                />
+                <input
+                    type="date"
+                    placeholder="Date Read"
+                    id="poem-read-input"
+                    style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        fontSize: '1rem',
+                        border: '2px solid #c7f2ed',
+                        borderRadius: '8px',
+                        backgroundColor: '#fffefc',
+                        color: '#879fbf',
+                        fontFamily: "'Crimson Text', serif",
+                        outline: 'none',
+                        boxSizing: 'border-box'
+                    }}
+                />
+            </div>
             <button
                 onClick={async () => {
-    const poemName = document.getElementById('poem-name-input').value.trim();
-    const poemAuthor = document.getElementById('poem-author-input').value.trim();
-    const datePublished = document.getElementById('poem-published-input').value;
+                    const poemName = document.getElementById('poem-name-input').value.trim();
+                    const poemAuthor = document.getElementById('poem-author-input').value.trim();
+                    const datePublished = document.getElementById('poem-published-input').value;
+                    const dateRead = document.getElementById('poem-read-input').value;
 
-    if (!poemName || !poemAuthor) {
-        alert('Poem name and author are required!');
-        return;
-    }
+                    if (!poemName || !poemAuthor) {
+                        alert('Poem name and author are required!');
+                        return;
+                    }
 
-    const newPoem = {
-        id: Date.now(),
-        name: poemName,
-        author: poemAuthor,
-        datePublished: datePublished || '',
-        favorited: false
-    };
+                    const newPoem = {
+                        id: Date.now(),
+                        name: poemName,
+                        author: poemAuthor,
+                        datePublished: datePublished || '',
+                        dateRead: dateRead || '',
+                        favorited: false
+                    };
 
-    const poemDocId = `${selectedName}-poems`;
-    const updatedPoems = [...poemData, newPoem];
+                    const poemDocId = `${selectedName}-poems`;
+                    const updatedPoems = [...poemData, newPoem];
 
-    await db.collection('poems').doc(poemDocId).set({
-        poems: updatedPoems
-    });
+                    await db.collection('poems').doc(poemDocId).set({
+                        poems: updatedPoems
+                    });
 
-    document.getElementById('poem-name-input').value = '';
-    document.getElementById('poem-author-input').value = '';
-    document.getElementById('poem-published-input').value = '';
-}}
+                    document.getElementById('poem-name-input').value = '';
+                    document.getElementById('poem-author-input').value = '';
+                    document.getElementById('poem-published-input').value = '';
+                    document.getElementById('poem-read-input').value = '';
+                }}
                 style={{
                     width: '100%',
                     padding: '0.75rem',
@@ -1731,7 +1745,7 @@
                     borderRadius: '8px',
                     cursor: 'pointer',
                     fontWeight: 600,
-                    fontFamily: "'Crimson Text', serif"
+                    fontFamily: "'Crimson Text', serif'
                 }}
             >
                 Add Poem
@@ -1797,16 +1811,19 @@
                             }}>
                                 by {poem.author}
                             </div>
-                            {poem.datePublished && (
-    <div style={{
-        fontSize: '0.85rem',
-        color: '#879fbf',
-        opacity: 0.6,
-        marginTop: '0.25rem'
-    }}>
-        Published: {poem.datePublished}
-    </div>
-)}                        </div>
+                            {(poem.datePublished || poem.dateRead) && (
+                                <div style={{
+                                    fontSize: '0.85rem',
+                                    color: '#879fbf',
+                                    opacity: 0.6,
+                                    marginTop: '0.25rem'
+                                }}>
+                                    {poem.datePublished && `Published: ${poem.datePublished}`}
+                                    {poem.datePublished && poem.dateRead && ' • '}
+                                    {poem.dateRead && `Read: ${poem.dateRead}`}
+                                </div>
+                            )}
+                        </div>
 
                         {/* Actions */}
                         <div style={{
@@ -1871,7 +1888,6 @@
         )}
     </div>
 )}
-   
                     </main>
 
                     {currentSquare !== null && (
