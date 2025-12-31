@@ -749,14 +749,6 @@
 
     return () => unsubscribe();
 }, [isAuthenticated, selectedName]);
-
-            useEffect(() => {
-    if (selectedCategory === 'Bonus Challenge') {
-        setCurrentPage('bonus');
-    } else if (currentPage === 'bonus') {
-        setCurrentPage('home');
-    }
-}, [selectedCategory]);
             
             const getGridSize = () => {
                 if (selectedCategory === 'Casual') return 5;
@@ -1086,7 +1078,7 @@
                     )}
 
                     <main style={{ padding: '1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
-                        {currentPage === 'home' && (
+                        {(currentPage === 'home' || currentPage === 'bonus') && {
                             <>
                               <div style={{
     display: 'flex',
@@ -1123,7 +1115,14 @@
     </label>
     <SearchableDropdown
         value={selectedCategory}
-        onChange={setSelectedCategory}
+        onChange={(value) => {
+    setSelectedCategory(value);
+    if (value === 'Bonus Challenge') {
+        setCurrentPage('bonus');
+    } else {
+        setCurrentPage('home');
+    }
+}}
         options={['Casual', 'Ambitious', 'Elite', 'Bonus Challenge']}
         placeholder="Choose card tier..."
     />
@@ -1661,80 +1660,64 @@
                     }}
                 />
             </div>
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-                gap: '1rem',
-                marginBottom: '1rem'
-            }}>
-                <input
-                    type="date"
-                    placeholder="Date Published"
-                    id="poem-published-input"
-                    style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        fontSize: '1rem',
-                        border: '2px solid #c7f2ed',
-                        borderRadius: '8px',
-                        backgroundColor: '#fffefc',
-                        color: '#879fbf',
-                        fontFamily: "'Crimson Text', serif",
-                        outline: 'none',
-                        boxSizing: 'border-box'
-                    }}
-                />
-                <input
-                    type="date"
-                    placeholder="Date Read"
-                    id="poem-read-input"
-                    style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        fontSize: '1rem',
-                        border: '2px solid #c7f2ed',
-                        borderRadius: '8px',
-                        backgroundColor: '#fffefc',
-                        color: '#879fbf',
-                        fontFamily: "'Crimson Text', serif",
-                        outline: 'none',
-                        boxSizing: 'border-box'
-                    }}
-                />
-            </div>
+            <div style={{ marginBottom: '1rem' }}>
+    <label style={{
+        display: 'block',
+        marginBottom: '0.5rem',
+        fontSize: '0.9rem',
+        color: '#879fbf',
+        opacity: 0.7,
+        fontStyle: 'italic'
+    }}>
+        Date Published (optional)
+    </label>
+    <input
+        type="date"
+        id="poem-published-input"
+        style={{
+            width: '100%',
+            padding: '0.75rem',
+            fontSize: '1rem',
+            border: '2px solid #c7f2ed',
+            borderRadius: '8px',
+            backgroundColor: '#fffefc',
+            color: '#879fbf',
+            fontFamily: "'Crimson Text', serif",
+            outline: 'none',
+            boxSizing: 'border-box'
+        }}
+    />
+</div>
             <button
-                onClick={async () => {
-                    const poemName = document.getElementById('poem-name-input').value.trim();
-                    const poemAuthor = document.getElementById('poem-author-input').value.trim();
-                    const datePublished = document.getElementById('poem-published-input').value;
-                    const dateRead = document.getElementById('poem-read-input').value;
+onClick={async () => {
+    const poemName = document.getElementById('poem-name-input').value.trim();
+    const poemAuthor = document.getElementById('poem-author-input').value.trim();
+    const datePublished = document.getElementById('poem-published-input').value;
 
-                    if (!poemName || !poemAuthor) {
-                        alert('Poem name and author are required!');
-                        return;
-                    }
+    if (!poemName || !poemAuthor) {
+        alert('Poem name and author are required!');
+        return;
+    }
 
-                    const newPoem = {
-                        id: Date.now(),
-                        name: poemName,
-                        author: poemAuthor,
-                        datePublished: datePublished || '',
-                        dateRead: dateRead || '',
-                        favorited: false
-                    };
+    const newPoem = {
+        id: Date.now(),
+        name: poemName,
+        author: poemAuthor,
+        datePublished: datePublished || '',
+        favorited: false
+    };
 
-                    const poemDocId = `${selectedName}-poems`;
-                    const updatedPoems = [...poemData, newPoem];
+    const poemDocId = `${selectedName}-poems`;
+    const updatedPoems = [...poemData, newPoem];
 
-                    await db.collection('poems').doc(poemDocId).set({
-                        poems: updatedPoems
-                    });
+    await db.collection('poems').doc(poemDocId).set({
+        poems: updatedPoems
+    });
 
-                    document.getElementById('poem-name-input').value = '';
-                    document.getElementById('poem-author-input').value = '';
-                    document.getElementById('poem-published-input').value = '';
-                    document.getElementById('poem-read-input').value = '';
-                }}
+    document.getElementById('poem-name-input').value = '';
+    document.getElementById('poem-author-input').value = '';
+    document.getElementById('poem-published-input').value = '';
+}}
                 style={{
                     width: '100%',
                     padding: '0.75rem',
@@ -1811,18 +1794,16 @@
                             }}>
                                 by {poem.author}
                             </div>
-                            {(poem.datePublished || poem.dateRead) && (
-                                <div style={{
-                                    fontSize: '0.85rem',
-                                    color: '#879fbf',
-                                    opacity: 0.6,
-                                    marginTop: '0.25rem'
-                                }}>
-                                    {poem.datePublished && `Published: ${poem.datePublished}`}
-                                    {poem.datePublished && poem.dateRead && ' • '}
-                                    {poem.dateRead && `Read: ${poem.dateRead}`}
-                                </div>
-                            )}
+                           {poem.datePublished && (
+      <div style={{
+        fontSize: '0.85rem',
+        color: '#879fbf',
+        opacity: 0.6,
+        marginTop: '0.25rem'
+    }}>
+        Published: {poem.datePublished}
+    </div>
+)}
                         </div>
 
                         {/* Actions */}
